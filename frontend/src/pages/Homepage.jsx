@@ -1,13 +1,17 @@
 import FoodCategory from "@/components/food category/FoodCategory";
+import FoodListDrawer from "@/components/FoodListDrawer";
 import Navbar from "@/components/Navbar";
 import React from "react";
 
 const Homepage = () => {
   return (
-    <div className="max-w-screen-xl mx-auto border">
+    <>
       <Navbar />
-      <FoodCategory />
-    </div>
+      <FoodListDrawer />
+      <div className="max-w-screen-xl mx-auto p-2 sm:p-4">
+        <FoodCategory />
+      </div>
+    </>
   );
 };
 

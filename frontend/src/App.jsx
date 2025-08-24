@@ -7,7 +7,7 @@ import Homepage from "./pages/Homepage";
 
 const App = () => {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="light" storageKey="theme">
       <Routes>
         <Route path="/" element={<Homepage/>}/>
       </Routes>
