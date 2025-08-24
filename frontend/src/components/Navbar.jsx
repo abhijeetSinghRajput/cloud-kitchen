@@ -4,11 +4,13 @@ import { Search, ShoppingCart } from "lucide-react";
 import SearchCommand from "./SearchCommand";
 import { Badge } from "./ui/badge";
 import { useCartStore } from "@/stores/useCartStore";
+import CartDrawer from "./CartDrawer";
 
 const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const { getCartItemCount } = useCartStore();
   const count = getCartItemCount();
+  const [openCart, setOpenCart] = useState(false);
 
   return (
     <nav className="sticky z-50 top-0 bg-primary-foreground shadow-md left-0">
@@ -22,18 +24,27 @@ const Navbar = () => {
           >
             <Search />
           </Button>
-          <Button size="icon" tooltip="cart" className="relative">
+          <Button
+            size="icon"
+            tooltip="cart"
+            className="relative"
+            onClick={() => setOpenCart(true)}
+          >
             <ShoppingCart />
             {count > 0 && (
-              <Badge 
-                  className={"absolute top-full left-full -translate-x-1/2 -translate-y-1/2 z-10 shadow-md rounded-full bg-[#ff5200] hover:bg-[#ff5200]"}>
-                {count}
+              <Badge
+                className={
+                  "absolute p-0 size-2.5 -bottom-1 -right-1 z-10 shadow-md rounded-full bg-[#ff5200] hover:bg-[#ff5200]"
+                }
+              >
+                {/* {count} */}
               </Badge>
             )}
           </Button>
         </div>
       </div>
       <SearchCommand open={searchOpen} setOpen={setSearchOpen} />
+      <CartDrawer open={openCart} onOpenChange={setOpenCart} />
     </nav>
   );
 };
