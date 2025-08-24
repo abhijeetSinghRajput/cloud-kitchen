@@ -1,6 +1,6 @@
 // CartDrawer.jsx
 import { useCartStore } from "@/stores/useCartStore";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Utensils } from "lucide-react";
 import React from "react";
 import FoodCard from "./FoodCard";
 import { Drawer, DrawerContent } from "./ui/drawer";
@@ -19,15 +19,22 @@ const CartDrawer = ({ open, onOpenChange }) => {
         <div className="p-4 max-w-screen-md w-full mx-auto h-full flex flex-col">
           {/* Header */}
           <h3 className="text-xl font-bold mb-4 flex-shrink-0 flex gap-2 items-center">
-            <ShoppingCart className="size-4" />
+            <ShoppingCart className="size-5" strokeWidth={3} />
             Cart
           </h3>
 
           {/* Scrollable content */}
           <ScrollArea className="flex-1 pr-2">
             {isEmpty ? (
-              <div className="h-full flex items-center justify-center text-muted-foreground">
-                Your cart is empty 🛒
+              <div className="h-full mt-8 flex flex-col gap-2 items-center text-center">
+                <div className="bg-muted size-24 rounded-full flex items-center justify-center">
+                  <Utensils size={34} strokeWidth={2} className="opacity-50" />
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-lg">Your Cart is Empty</h3>
+                  <p className="text-sm text-muted-foreground">Looks like you haven't added antyhing to your cart yet</p>
+                </div>
               </div>
             ) : (
               <div className="space-y-3">

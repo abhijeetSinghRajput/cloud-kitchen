@@ -32,12 +32,16 @@ const Navbar = () => {
           >
             <ShoppingCart />
             {count > 0 && (
-              <Badge
-                className={
-                  "absolute p-0 size-2.5 -bottom-1 -right-1 z-10 shadow-md rounded-full bg-[#ff5200] hover:bg-[#ff5200]"
-                }
-              >
-                {/* {count} */}
+              <Badge className="absolute p-0 size-2.5 -bottom-0.5 -right-0.5 z-10 shadow-md rounded-full bg-transparent border-0">
+                {/* Background pulse effect */}
+                <div className="absolute inset-0 rounded-full bg-[#ff5200] animate-ping" />
+
+                {/* Solid background */}
+                <div className="absolute inset-0 rounded-full bg-[#ff5200]" />
+
+                {/* Count text */}
+                <span className="relative z-10 text-xs font-bold text-white">
+                </span>
               </Badge>
             )}
           </Button>
