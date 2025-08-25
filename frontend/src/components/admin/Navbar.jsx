@@ -11,19 +11,19 @@ import {
 } from "../ui/dropdown-menu";
 import { getAvatarFallbackText } from "@/lib/utils";
 import { Link, NavLink } from "react-router-dom";
+import TooltipWrapper from "../TooltipWrapper";
 
 const links = [
-  { labl: "Dashboard", path: "/admin/dashboard", icon: Gauge },
-  { labl: "Category", path: "/admin/category", icon: CupSoda },
+  { label: "Dashboard", path: "/admin/dashboard", icon: Gauge },
+  { label: "Category", path: "/admin/category", icon: CupSoda },
 ];
 
-
 const Navbar = () => {
-    const authUser = {
-        name: "Abhijeet Singh",
-        email: "abhijeet62008@gmail.com",
-        avatar: "https://avatars.githubusercontent.com/u/134230962",
-    }
+  const authUser = {
+    name: "Abhijeet Singh",
+    email: "abhijeet62008@gmail.com",
+    avatar: "https://avatars.githubusercontent.com/u/134230962",
+  };
   return (
     <nav className="sticky z-50 top-0 bg-primary-foreground shadow-md left-0">
       <div className="max-w-screen-xl mx-auto flex justify-between items-center px-4 py-2">
@@ -45,7 +45,7 @@ const Navbar = () => {
                   }
                 >
                   <link.icon className="size-5" />
-                  {link.labl}
+                  <span className="hidden sm:block">{link.label}</span>
                 </NavLink>
               </li>
             ))}
