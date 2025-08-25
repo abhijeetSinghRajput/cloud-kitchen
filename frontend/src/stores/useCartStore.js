@@ -9,7 +9,7 @@ export const useCartStore = create((set, get) => ({
     //         image: "/food images/Biryani.png",
     //         desc: "Fragrant rice with vegetables and spices",
     //         price: 160,
-    //         count: 2
+    //         quantity: 2
     //       }
     //   ],
     //   "Tea": [...]
@@ -31,12 +31,12 @@ export const useCartStore = create((set, get) => ({
             );
 
             if (existingItemIndex >= 0) {
-                newCart[category][existingItemIndex].count += 1;
+                newCart[category][existingItemIndex].quantity += 1;
             } else {
-                // store the entire item + count
+                // store the entire item + quantity
                 newCart[category].push({
                     ...item,
-                    count: 1,
+                    quantity: 1,
                 });
             }
 
@@ -56,8 +56,8 @@ export const useCartStore = create((set, get) => ({
             );
 
             if (existingItemIndex >= 0) {
-                if (newCart[category][existingItemIndex].count > 1) {
-                    newCart[category][existingItemIndex].count -= 1;
+                if (newCart[category][existingItemIndex].quantity > 1) {
+                    newCart[category][existingItemIndex].quantity -= 1;
                 } else {
                     newCart[category].splice(existingItemIndex, 1);
                     if (newCart[category].length === 0) {
@@ -89,19 +89,19 @@ export const useCartStore = create((set, get) => ({
         });
     },
 
-    getCategoryItemCount: (category) => {
+    getCategoryItemQuantity: (category) => {
         const categoryItem = get().cart[category];
         if (!categoryItem) return 0;
 
-        return categoryItem.reduce((total, item) => total + item.count, 0);
+        return categoryItem.reduce((total, item) => total + item.quantity, 0);
     },
 
-    getCartItemCount: () => {
-        let count = 0;
+    getCartItemQuantity: () => {
+        let quantity = 0;
         for (const category in get().cart) {
-            count += get().getCategoryItemCount(category);
+            quantity += get().getCategoryItemQuantity(category);
         }
-        return count;
+        return quantity;
     },
 
     // Total items
@@ -110,7 +110,7 @@ export const useCartStore = create((set, get) => ({
         let total = 0;
 
         for (const category in cart) {
-            total += cart[category].reduce((sum, item) => sum + item.count, 0);
+            total += cart[category].reduce((sum, item) => sum + item.quantity, 0);
         }
 
         return total;
@@ -123,7 +123,7 @@ export const useCartStore = create((set, get) => ({
 
         for (const category in cart) {
             total += cart[category].reduce(
-                (sum, item) => sum + item.price * item.count,
+                (sum, item) => sum + item.price * item.quantity,
                 0
             );
         }

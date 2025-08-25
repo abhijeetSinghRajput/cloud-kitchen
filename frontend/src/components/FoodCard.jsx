@@ -10,7 +10,7 @@ const FoodCard = ({ food, categoryName }) => {
   // Find the current item in cart
   const cartItems = cart[categoryName] || [];
   const cartItem = cartItems.find((item) => item.name === food.name);
-  const itemCount = cartItem ? cartItem.count : 0;
+  const itemQuantity = cartItem ? cartItem.quantity : 0;
 
   return (
     <Card className="flex gap-2 overflow-hidden">
@@ -31,12 +31,12 @@ const FoodCard = ({ food, categoryName }) => {
           <div className="bg-[#ff5200] rounded-full overflow-hidden w-max">
             <div className="relative h-9 flex items-center justify-center gap-2">
               <span className="absolute text-primary-foreground font-medium z-10">
-                {itemCount || "Add"}
+                {itemQuantity || "Add"}
               </span>
               <Button
                 className="h-full rounded-none bg-[#ff5200] hover:bg-transparent shadow-none"
                 onClick={() => removeFromCart(categoryName, food.name)}
-                disabled={itemCount === 0}
+                disabled={itemQuantity === 0}
               >
                 <Minus />
               </Button>

@@ -9,7 +9,7 @@ import { useCartStore } from "@/stores/useCartStore";
 const FoodCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { getCategoryItemCount } = useCartStore();
+  const { getCategoryItemQuantity } = useCartStore();
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -21,14 +21,14 @@ const FoodCategory = () => {
       <h3 className="text-xl font-semibold mb-4">Categories</h3>
       <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-2">
         {categories.map((cat, index) => {
-          const count = getCategoryItemCount(cat.name);
+          const quantity = getCategoryItemQuantity(cat.name);
           return (
             <div key={index} className="relative">
-              {count > 0 && (
+              {quantity > 0 && (
                 <Badge
                   className={"absolute top-0 right-0 z-10 shadow-md rounded-full bg-[#ff5200] hover:bg-[#ff5200]"}
                 >
-                  {count}
+                  {quantity}
                 </Badge>
               )}
               <Card

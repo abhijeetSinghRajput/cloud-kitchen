@@ -1,24 +1,26 @@
 import React from "react";
-import { Button } from "./components/ui/button";
 import { ThemeProvider } from "@/components/theme-provider";
-import { ModeToggle } from "./components/mode-toggle";
 import { Routes, Route } from "react-router-dom";
 import Homepage from "./pages/Homepage";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
+import FoodCategoryPage from "./pages/admin/FoodCategoryPage";
+import FoodItemPage from "./pages/admin/FoodItemPage";
 
 const App = () => {
   return (
     <ThemeProvider defaultTheme="light" storageKey="theme">
       <Routes>
         <Route path="/" element={<Homepage/>}/>
+        <Route path="/admin" element={<AdminLayout/>}>
+          <Route index element={<AdminDashboardPage/>}/>
+          <Route path="dashboard" element={<AdminDashboardPage/>}/>
+          <Route path="category" element={<FoodCategoryPage/>}/>
+          <Route path="category/:categoryName" element={<FoodItemPage/>}/>
+        </Route>
       </Routes>
     </ThemeProvider>
   );
 };
 
 export default App;
-
-// modeling
-// photography
-// social media managing
-// contact
-// doctor patient
