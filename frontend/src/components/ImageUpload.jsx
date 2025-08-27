@@ -1,38 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Pizza } from "lucide-react";
+import { Loader2, Pizza } from "lucide-react";
 import { Badge } from "./ui/badge";
 
-const ImageUpload = ({ image, onChange }) => {
+const ImageUpload = ({ image, onChange, isLoading, error }) => {
   const [fileInfo, setFileInfo] = useState(null);
+  const [preview, setPreview] = useState(image || "");
+
+  useEffect(() => {
+    setPreview(image || "");
+  }, [image]);
 
   const handleFileSelect = (e) => {
-  const file = e.target.files?.[0];
-  if (file) {
-    onChange(file);
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-    let size = 0;
-    let unit = "MB";
+    onChange(file); // send file to parent for uploading
 
-    if (file.size < 1024 * 1024) {
-      size = (file.size / 1024).toFixed(2); // KB
-      unit = "KB";
-    } else {
-      size = (file.size / (1024 * 1024)).toFixed(2); // MB
-    }
+    const size = file.size < 1024 * 1024 
+      ? `${(file.size / 1024).toFixed(2)} KB`
+      : `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
 
     setFileInfo({
       name: file.name,
       type: file.type,
-      size: `${size} ${unit}`,
+      size,
     });
-  }
-};
 
+    // show preview immediately
+    setPreview(URL.createObjectURL(file));
+  };
 
   return (
-    <div className="flex gap-2">
-      <label htmlFor="food-image">
+    <div className="flex gap-2 items-start relative">
+      <label htmlFor="food-image" className="relative">
         <input
           id="food-image"
           type="file"
@@ -40,21 +41,33 @@ const ImageUpload = ({ image, onChange }) => {
           hidden
           onChange={handleFileSelect}
         />
-        <Avatar className="size-24 rounded-lg border cursor-pointer hover:brightness-90 transition-all">
-          <AvatarImage src={image || ""} className="w-full h-full object-cover" />
-          <AvatarFallback className="rounded-none">
+        <Avatar className="size-24 rounded-lg border cursor-pointer hover:brightness-90 transition-all relative overflow-hidden">
+          <AvatarImage src={preview} className="w-full h-full object-cover" />
+          <AvatarFallback className="rounded-none flex items-center justify-center bg-gray-100">
             <Pizza className="text-muted-foreground size-10" />
           </AvatarFallback>
+
+          {/* Loader overlay */}
+          {isLoading && (
+            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center z-10">
+              <span className="text-white font-semibold text-sm">
+                <Loader2 className="animate-spin"/>
+              </span>
+            </div>
+          )}
         </Avatar>
       </label>
 
       {fileInfo && (
-        <div className="flex items-start justify-between w-full gap-2">
-          <div>
-            <p className="font-semibold">{fileInfo.name}</p>
-            <p className="text-muted-foreground text-sm">{fileInfo.type}</p>
+        <div className="flex flex-col w-full gap-1">
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="font-semibold">{fileInfo.name}</p>
+              <p className="text-muted-foreground text-sm">{fileInfo.type}</p>
+            </div>
+            <Badge className="whitespace-nowrap">{fileInfo.size}</Badge>
           </div>
-          <Badge className={"whitespace-nowrap"}>{fileInfo.size}</Badge>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
         </div>
       )}
     </div>

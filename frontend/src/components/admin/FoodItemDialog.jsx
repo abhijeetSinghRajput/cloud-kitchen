@@ -1,11 +1,9 @@
 import { Button } from "@/components/ui/button";
-
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -20,38 +18,62 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ImageUpload from "../ImageUpload";
-import { Trash2 } from "lucide-react";
+import { Trash2, Loader2, AlertCircle } from "lucide-react";
+import { useCloudinaryStore } from "@/stores/useCloudinaryStore";
+import { useInventoryStore } from "@/stores/useInventoryStore";
 
 const FoodItemDialog = ({
   item = null,
-  onSave,
-  onDelete,
   open = false,
   onOpenChange,
+  folder = "foodItems",
+  categoryId,
+  onItemUpdated, // Callback for when item is successfully updated/deleted
 }) => {
   const [formData, setFormData] = useState({
-    name: item?.name || "",
-    image: item?.image || "", // will hold preview url
-    file: null, // raw file for upload
-    description: item?.desc || "",
-    price: item?.price || "",
-    tags: item?.tags?.join(", ") || "",
+    name: "",
+    image: "",
+    file: null,
+    description: "",
+    price: "",
+    tags: "",
   });
 
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
 
-  React.useEffect(() => {
+  const { 
+    uploadImage, 
+    deleteImage, 
+    deleteImageFallback,
+    loading: cloudLoading, 
+    error: cloudError,
+    clearError: clearCloudError 
+  } = useCloudinaryStore();
+
+  const {
+    addItem,
+    updateItem,
+    deleteItem,
+    loading: invLoading,
+    error: invError,
+    clearError: clearInvError,
+  } = useInventoryStore();
+
+  // ✅ Initialize form data when item changes
+  useEffect(() => {
     if (item) {
       setFormData({
         name: item.name || "",
         image: item.image || "",
         file: null,
-        description: item.desc || "",
-        price: item.price || "",
-        tags: item.tags?.join(", ") || "",
+        description: item.description || "",
+        price: item.price?.toString() || "",
+        tags: Array.isArray(item.tags) ? item.tags.join(", ") : "",
       });
     } else {
       setFormData({
@@ -63,40 +85,153 @@ const FoodItemDialog = ({
         tags: "",
       });
     }
+    setValidationErrors({});
   }, [item, open]);
 
+  // ✅ Clear errors when dialog opens
+  useEffect(() => {
+    if (open) {
+      clearCloudError();
+      clearInvError();
+    }
+  }, [open, clearCloudError, clearInvError]);
+
+  // ✅ Validate form
+  const validateForm = useCallback(() => {
+    const errors = {};
+
+    if (!formData.name.trim()) {
+      errors.name = "Item name is required";
+    }
+
+    if (!formData.price || isNaN(Number(formData.price)) || Number(formData.price) <= 0) {
+      errors.price = "Valid price is required";
+    }
+
+    if (!formData.description.trim()) {
+      errors.description = "Description is required";
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  }, [formData]);
+
+  // ✅ Handle image selection and upload
+  const handleImageChange = async (file) => {
+    if (!file) return;
+
+    try {
+      clearCloudError();
+      
+      const previewUrl = URL.createObjectURL(file);
+      setFormData((prev) => ({ ...prev, image: previewUrl, file }));
+
+      const result = await uploadImage({
+        file,
+        folder,
+        publicId: item?.id || `item_${Date.now()}`,
+        transformation: "c_fill,w_400,h_400,q_auto,f_auto",
+      });
+
+      URL.revokeObjectURL(previewUrl);
+
+      setFormData((prev) => ({ 
+        ...prev, 
+        image: result.url, 
+        file: null 
+      }));
+
+    } catch (err) {
+      console.error("Image upload failed:", err);
+    }
+  };
+
+  // ✅ Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    if (validationErrors[name]) {
+      setValidationErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
-  const handleImageChange = (file) => {
-    if (!file) return;
-    const previewUrl = URL.createObjectURL(file);
-    setFormData((prev) => ({ ...prev, image: previewUrl, file }));
+  // ✅ Handle save (add or update)
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+    if (!categoryId) {
+      setValidationErrors({ general: "Category ID is missing" });
+      return;
+    }
+
+    try {
+      clearInvError();
+      clearCloudError();
+
+      const payload = {
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        price: Number(formData.price),
+        tags: formData.tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter((t) => t.length > 0),
+        image: formData.image,
+      };
+
+      let result;
+      if (item?.id) {
+        result = await updateItem(categoryId, item.id, payload);
+      } else {
+        result = await addItem(categoryId, payload);
+      }
+
+      if (onItemUpdated) {
+        onItemUpdated(result);
+      }
+
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Save failed:", err);
+      setValidationErrors({ general: err.message });
+    }
   };
 
-  const handleSubmit = () => {
-    const payload = {
-      id: item?.id, // Include ID for updates
-      name: formData.name,
-      description: formData.description,
-      price: Number(formData.price),
-      tags: formData.tags.split(",").map((t) => t.trim()),
-      image: formData.file || item?.image, // use existing image if no new file
-    };
-    onSave(payload);
+  // ✅ Handle delete with image cleanup
+  const handleDelete = async () => {
+    if (!item?.id) return;
+
+    try {
+      clearInvError();
+      clearCloudError();
+
+      const deleteImageFn = item.image 
+        ? (deleteImage || deleteImageFallback) 
+        : null;
+
+      await deleteItem(item, deleteImageFn);
+
+      if (onItemUpdated) {
+        onItemUpdated(null, "deleted");
+      }
+
+      setIsDeleteAlertOpen(false);
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Delete failed:", err);
+      setValidationErrors({ general: err.message });
+      setIsDeleteAlertOpen(false);
+    }
   };
 
-  const handleDelete = () => {
-    onDelete(item.id);
-    setIsDeleteAlertOpen(false);
-  };
+  const isLoading = cloudLoading.uploadImage || invLoading.addItem || invLoading.updateItem;
+  const isDeleteLoading = invLoading.deleteItem || cloudLoading.deleteImage;
+  const hasErrors = cloudError || invError || Object.keys(validationErrors).length > 0;
 
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {item ? "Edit Food Item" : "Add New Food Item"}
@@ -104,43 +239,81 @@ const FoodItemDialog = ({
           </DialogHeader>
 
           <div className="space-y-4">
-            {/* Image Upload */}
-            <ImageUpload image={formData.image} onChange={handleImageChange} />
+            {/* Error Display */}
+            {hasErrors && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  {cloudError || invError || validationErrors.general || 
+                   Object.values(validationErrors)[0]}
+                </AlertDescription>
+              </Alert>
+            )}
 
+            {/* Image Upload */}
             <div>
-              <Label htmlFor="name">Name</Label>
+              <Label>Item Image</Label>
+              <ImageUpload
+                image={formData.image}
+                onChange={handleImageChange}
+                isLoading={cloudLoading.uploadImage}
+                error={cloudError}
+                className="mt-2"
+              />
+            </div>
+
+            {/* Name */}
+            <div>
+              <Label htmlFor="name">Name *</Label>
               <Input
                 id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter food name"
+                className={validationErrors.name ? "border-red-500" : ""}
               />
+              {validationErrors.name && (
+                <p className="text-sm text-red-500 mt-1">{validationErrors.name}</p>
+              )}
             </div>
 
+            {/* Description */}
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">Description *</Label>
               <Textarea
                 id="description"
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Write a short description..."
+                className={validationErrors.description ? "border-red-500" : ""}
               />
+              {validationErrors.description && (
+                <p className="text-sm text-red-500 mt-1">{validationErrors.description}</p>
+              )}
             </div>
 
+            {/* Price */}
             <div>
-              <Label htmlFor="price">Price (₹)</Label>
+              <Label htmlFor="price">Price (₹) *</Label>
               <Input
                 id="price"
                 name="price"
                 type="number"
+                min="0"
+                step="0.01"
                 value={formData.price}
                 onChange={handleChange}
                 placeholder="100"
+                className={validationErrors.price ? "border-red-500" : ""}
               />
+              {validationErrors.price && (
+                <p className="text-sm text-red-500 mt-1">{validationErrors.price}</p>
+              )}
             </div>
 
+            {/* Tags */}
             <div>
               <Label htmlFor="tags">Tags (comma separated)</Label>
               <Input
@@ -150,11 +323,20 @@ const FoodItemDialog = ({
                 onChange={handleChange}
                 placeholder="spicy, veg, popular"
               />
+              <p className="text-sm text-muted-foreground mt-1">
+                Separate multiple tags with commas
+              </p>
             </div>
 
-            <div className="flex gap-2">
-              <Button className="flex-1" onClick={handleSubmit}>
-                {item ? "Update" : "Save"} Item
+            {/* Action Buttons */}
+            <div className="flex gap-2 pt-2">
+              <Button
+                className="flex-1"
+                onClick={handleSubmit}
+                disabled={isLoading}
+              >
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {item ? "Update Item" : "Add Item"}
               </Button>
 
               {item && (
@@ -162,8 +344,14 @@ const FoodItemDialog = ({
                   type="button"
                   variant="destructive"
                   onClick={() => setIsDeleteAlertOpen(true)}
+                  disabled={isDeleteLoading}
                 >
-                  <Trash2 className="size-4" />
+                  {isDeleteLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="mr-2 h-4 w-4" />
+                  )}
+                  Delete
                 </Button>
               )}
             </div>
@@ -171,22 +359,24 @@ const FoodItemDialog = ({
         </DialogContent>
       </Dialog>
 
+      {/* Delete Confirmation */}
       <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Delete Food Item?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              food item "{item?.name}" from your menu.
+              This action cannot be undone. The item and its image will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700"
               onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground"
+              disabled={isDeleteLoading}
             >
-              Delete
+              {isDeleteLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Confirm Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

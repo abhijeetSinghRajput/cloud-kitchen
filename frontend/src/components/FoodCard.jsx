@@ -15,7 +15,7 @@ const FoodCard = ({ food, categoryName }) => {
   return (
     <Card className="flex gap-2 overflow-hidden">
       <div className="size-24 flex-shrink-0">
-        <img src={food.image} className="w-full h-full object-contain" />
+        <img src={food.image} className="w-full h-full object-cover" />
       </div>
       <div className="flex flex-col justify-between flex-1 p-2 space-y-2">
         <div>
