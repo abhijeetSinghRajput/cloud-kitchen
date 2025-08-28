@@ -12,7 +12,6 @@ const AdminDashboardPage = () => {
     return () => unsubscribe(); // cleanup listener on unmount
   }, [subscribeOrders]);
 
-  console.log(orders);
   const pendingOrders = orders.filter((o) => o.status === "pending");
   const completedOrders = orders.filter((o) => o.status === "completed");
 

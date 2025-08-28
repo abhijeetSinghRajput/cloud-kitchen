@@ -1,4 +1,3 @@
-// stores/useOrderStore.js
 import { db } from "@/firebase";
 import {
   addDoc,
@@ -7,6 +6,10 @@ import {
   onSnapshot,
   doc,
   getDoc,
+  deleteDoc,
+  updateDoc,
+  query,
+  orderBy,
 } from "firebase/firestore";
 import { toast } from "sonner";
 import { create } from "zustand";
@@ -14,7 +17,7 @@ import { create } from "zustand";
 export const useOrderStore = create((set) => ({
   orders: [],
 
-  // ✅ Place Order
+  // ✅ Place Order (no totalAmount here)
   placeOrder: async (order) => {
     try {
       await addDoc(collection(db, "orders"), {
@@ -22,6 +25,7 @@ export const useOrderStore = create((set) => ({
         status: "pending",
         createdAt: serverTimestamp(),
       });
+
       toast.success("Order placed successfully");
     } catch (error) {
       toast.error("Failed to place order");
@@ -29,36 +33,62 @@ export const useOrderStore = create((set) => ({
     }
   },
 
-  // ✅ Subscribe to orders + populate item details
+  // ✅ Delete Order
+  deleteOrder: async (id) => {
+    try {
+      await deleteDoc(doc(db, "orders", id));
+      toast.success("Order deleted");
+    } catch (error) {
+      toast.error("Failed to delete order");
+      console.error("❌ Error deleting order:", error);
+    }
+  },
+
+  // ✅ Mark as Done
+  markDone: async (id) => {
+    try {
+      await updateDoc(doc(db, "orders", id), { status: "completed" });
+      toast.success("Order marked as done");
+    } catch (error) {
+      toast.error("Failed to mark done");
+      console.error("❌ Error updating order:", error);
+    }
+  },
+
+  // ✅ Subscribe to orders (FIFO + enrich items + compute totalAmount)
   subscribeOrders: () => {
-    const unsubscribe = onSnapshot(collection(db, "orders"), async (snapshot) => {
+    const q = query(collection(db, "orders"), orderBy("createdAt", "asc"));
+
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       const promises = snapshot.docs.map(async (docSnap) => {
         const order = { id: docSnap.id, ...docSnap.data() };
 
-        // For each item → fetch details
+        // Enrich items with details
         const enrichedItems = await Promise.all(
           order.items.map(async (item) => {
             const foodRef = doc(db, "items", item.id);
             const foodSnap = await getDoc(foodRef);
 
             if (foodSnap.exists()) {
-              return {
-                ...item,
-                ...foodSnap.data(), // merge food details into item
-              };
+              return { ...item, ...foodSnap.data() };
             }
-            return item; // fallback if food item not found
+            return item;
           })
         );
 
-        return { ...order, items: enrichedItems };
+        // ✅ Compute totalAmount here on every fetch
+        const totalAmount = enrichedItems.reduce(
+          (sum, item) => sum + (item.price || 0) * (item.quantity || 0),
+          0
+        );
+
+        return { ...order, items: enrichedItems, totalAmount };
       });
 
       const ordersWithItems = await Promise.all(promises);
-
       set({ orders: ordersWithItems });
     });
 
-    return unsubscribe; // allow unsubscribe in component
+    return unsubscribe;
   },
 }));

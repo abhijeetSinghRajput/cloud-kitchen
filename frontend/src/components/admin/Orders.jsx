@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -6,24 +6,27 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { IndianRupee } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
+import { useOrderStore } from "@/stores/useOrderStore";
 
 // Primary brand color #ff5200
 function OrderCard({ order }) {
+  const { deleteOrder, markDone } = useOrderStore();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
   return (
     <Card className="w-full overflow-hidden border border-l-4 border-l-[#ff5200] shadow-md hover:shadow-lg transition-shadow mb-4">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="font-semibold text-lg">
-              Order #{order.id}
-            </h3>
+            <h3 className="font-semibold text-lg">{order.id}</h3>
             <div className="text-sm text-muted-foreground">
-              {timeAgo(order.createdAt)} 
+              {timeAgo(order.createdAt)}
             </div>
           </div>
-          <Badge className="bg-[#ff5200] hover:bg-[#ff5200]">
+          <Badge className="bg-[#ff5200] hover:bg-[#ff5200] whitespace-nowrap">
             Table {order.tableNo}
           </Badge>
         </div>
@@ -48,7 +51,7 @@ function OrderCard({ order }) {
         </div>
       </CardContent>
 
-      <CardFooter className="pt-2 border-t flex justify-between">
+      <CardFooter className="pt-2 border-t flex justify-between items-center">
         <div className="font-semibold">Total</div>
         <div className="flex items-center gap-2">
           <span className="font-semibold flex items-center">
@@ -57,6 +60,49 @@ function OrderCard({ order }) {
           </span>
         </div>
       </CardFooter>
+
+      <div className="flex justify-end gap-2 px-4 pb-3">
+        {/* ✅ Done button or badge */}
+        {order.status === "done" ? (
+          <Badge className="bg-green-600 hover:bg-green-600">Done</Badge>
+        ) : (
+          <Button
+            size="sm"
+            className="bg-green-600 hover:bg-green-700"
+            onClick={() => markDone(order.id)}
+          >
+            Done
+          </Button>
+        )}
+
+        {/* ❌ Delete button with confirmation */}
+        {confirmDelete ? (
+          <>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => deleteOrder(order.id)}
+            >
+              Confirm Delete
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setConfirmDelete(false)}
+            >
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => setConfirmDelete(true)}
+          >
+            Delete
+          </Button>
+        )}
+      </div>
     </Card>
   );
 }
@@ -66,7 +112,7 @@ const Orders = ({ orders }) => {
     <div>
       <div className="grid gap-4">
         {orders.map((order) => (
-          <OrderCard key={order.id} order={order} /> 
+          <OrderCard key={order.id} order={order} />
         ))}
       </div>
     </div>

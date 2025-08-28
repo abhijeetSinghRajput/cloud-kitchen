@@ -6,6 +6,7 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import FoodCategoryPage from "./pages/admin/FoodCategoryPage";
 import FoodItemPage from "./pages/admin/FoodItemPage";
+import { Toaster } from "sonner";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
           <Route path="category/:categoryName" element={<FoodItemPage/>}/>
         </Route>
       </Routes>
+      <Toaster/>
     </ThemeProvider>
   );
 };
