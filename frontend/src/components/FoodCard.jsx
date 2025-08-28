@@ -3,7 +3,6 @@ import { Card } from "./ui/card";
 import { Plus, Minus, IndianRupee } from "lucide-react";
 import { Button } from "./ui/button";
 import { useCartStore } from "@/stores/useCartStore";
-import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
 
 const FoodCard = ({ food, categoryName, className, imageClassName }) => {

@@ -1,7 +1,7 @@
 export const orders = [
   {
     _id: "64b1f001a1b2c301d1a1a001",
-    seatNo: 1,
+    tableNo: 1,
     items: [
       {
         itemId: "64b1f101a1b2c301d1a1a101",
@@ -25,7 +25,7 @@ export const orders = [
   },
   {
     _id: "64b1f001a1b2c301d1a1a002",
-    seatNo: 2,
+    tableNo: 2,
     items: [
       {
         itemId: "64b1f101a1b2c301d1a1a103",
@@ -42,7 +42,7 @@ export const orders = [
   },
   {
     _id: "64b1f001a1b2c301d1a1a003",
-    seatNo: 3,
+    tableNo: 3,
     items: [
       {
         itemId: "64b1f101a1b2c301d1a1a104",
@@ -66,7 +66,7 @@ export const orders = [
   },
   {
     _id: "64b1f001a1b2c301d1a1a004",
-    seatNo: 4,
+    tableNo: 4,
     items: [
       {
         itemId: "64b1f101a1b2c301d1a1a106",
@@ -83,7 +83,7 @@ export const orders = [
   },
   {
     _id: "64b1f001a1b2c301d1a1a005",
-    seatNo: 5,
+    tableNo: 5,
     items: [
       {
         itemId: "64b1f101a1b2c301d1a1a107",
@@ -107,7 +107,7 @@ export const orders = [
   },
   {
     _id: "64b1f001a1b2c301d1a1a006",
-    seatNo: 6,
+    tableNo: 6,
     items: [
       {
         itemId: "64b1f101a1b2c301d1a1a109",
@@ -131,7 +131,7 @@ export const orders = [
   },
   {
     _id: "64b1f001a1b2c301d1a1a007",
-    seatNo: 7,
+    tableNo: 7,
     items: [
       {
         itemId: "64b1f101a1b2c301d1a1a111",
@@ -155,7 +155,7 @@ export const orders = [
   },
   {
     _id: "64b1f001a1b2c301d1a1a008",
-    seatNo: 8,
+    tableNo: 8,
     items: [
       {
         itemId: "64b1f101a1b2c301d1a1a113",
@@ -172,7 +172,7 @@ export const orders = [
   },
   {
     _id: "64b1f001a1b2c301d1a1a009",
-    seatNo: 9,
+    tableNo: 9,
     items: [
       {
         itemId: "64b1f101a1b2c301d1a1a114",
@@ -196,7 +196,7 @@ export const orders = [
   },
   {
     _id: "64b1f001a1b2c301d1a1a010",
-    seatNo: 10,
+    tableNo: 10,
     items: [
       {
         itemId: "64b1f101a1b2c301d1a1a116",

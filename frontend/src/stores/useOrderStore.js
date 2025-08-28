@@ -1,97 +1,64 @@
 // stores/useOrderStore.js
+import { db } from "@/firebase";
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  onSnapshot,
+  doc,
+  getDoc,
+} from "firebase/firestore";
+import { toast } from "sonner";
 import { create } from "zustand";
-import { subscribeWithSelector } from "zustand/middleware";
 
-export const useOrderStore = create(
-  subscribeWithSelector((set, get) => ({
-    orders: [],
-    
-    // Add new order from checkout
-    addOrder: (cartItems, tableNumber) => {
-      const newOrder = {
-        id: `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        tableNumber: tableNumber,
-        items: cartItems,
-        status: "pending", // pending, served, done
-        timestamp: new Date().toISOString(),
-        totalAmount: cartItems.reduce((total, item) => total + (item.price * item.quantity), 0),
-        totalItems: cartItems.reduce((total, item) => total + item.quantity, 0)
-      };
-      
-      set((state) => ({
-        orders: [newOrder, ...state.orders]
-      }));
-      
-      return newOrder.id;
-    },
-    
-    // Update order status
-    updateOrderStatus: (orderId, newStatus) => {
-      set((state) => ({
-        orders: state.orders.map((order) =>
-          order.id === orderId
-            ? { ...order, status: newStatus, updatedAt: new Date().toISOString() }
-            : order
-        )
-      }));
-    },
-    
-    // Get orders by status
-    getOrdersByStatus: (status) => {
-      return get().orders.filter(order => order.status === status);
-    },
-    
-    // Get orders by table number
-    getOrdersByTable: (tableNumber) => {
-      return get().orders.filter(order => order.tableNumber === tableNumber);
-    },
-    
-    // Get pending orders
-    getPendingOrders: () => {
-      return get().orders.filter(order => order.status === "pending");
-    },
-    
-    // Get served orders
-    getServedOrders: () => {
-      return get().orders.filter(order => order.status === "served");
-    },
-    
-    // Get completed orders
-    getCompletedOrders: () => {
-      return get().orders.filter(order => order.status === "done");
-    },
-    
-    // Remove order (optional - for cleanup)
-    removeOrder: (orderId) => {
-      set((state) => ({
-        orders: state.orders.filter(order => order.id !== orderId)
-      }));
-    },
-    
-    // Get order summary stats
-    getOrderStats: () => {
-      const orders = get().orders;
-      const today = new Date().toDateString();
-      
-      const todayOrders = orders.filter(order => 
-        new Date(order.timestamp).toDateString() === today
-      );
-      
-      return {
-        total: orders.length,
-        pending: orders.filter(o => o.status === "pending").length,
-        served: orders.filter(o => o.status === "served").length,
-        done: orders.filter(o => o.status === "done").length,
-        todayTotal: todayOrders.length,
-        todayRevenue: todayOrders
-          .filter(o => o.status === "done")
-          .reduce((sum, o) => sum + o.totalAmount, 0)
-      };
-    },
-    
-    // Clear all orders (admin function)
-    clearAllOrders: () => {
-      set({ orders: [] });
+export const useOrderStore = create((set) => ({
+  orders: [],
+
+  // ✅ Place Order
+  placeOrder: async (order) => {
+    try {
+      await addDoc(collection(db, "orders"), {
+        ...order,
+        status: "pending",
+        createdAt: serverTimestamp(),
+      });
+      toast.success("Order placed successfully");
+    } catch (error) {
+      toast.error("Failed to place order");
+      console.error("❌ Error placing order:", error);
     }
-  }))
-);
+  },
+
+  // ✅ Subscribe to orders + populate item details
+  subscribeOrders: () => {
+    const unsubscribe = onSnapshot(collection(db, "orders"), async (snapshot) => {
+      const promises = snapshot.docs.map(async (docSnap) => {
+        const order = { id: docSnap.id, ...docSnap.data() };
+
+        // For each item → fetch details
+        const enrichedItems = await Promise.all(
+          order.items.map(async (item) => {
+            const foodRef = doc(db, "items", item.id);
+            const foodSnap = await getDoc(foodRef);
+
+            if (foodSnap.exists()) {
+              return {
+                ...item,
+                ...foodSnap.data(), // merge food details into item
+              };
+            }
+            return item; // fallback if food item not found
+          })
+        );
+
+        return { ...order, items: enrichedItems };
+      });
+
+      const ordersWithItems = await Promise.all(promises);
+
+      set({ orders: ordersWithItems });
+    });
+
+    return unsubscribe; // allow unsubscribe in component
+  },
+}));

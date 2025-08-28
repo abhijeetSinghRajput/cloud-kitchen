@@ -1,27 +1,50 @@
 // CartDrawer.jsx
 import { useCartStore } from "@/stores/useCartStore";
 import { ShoppingCart, Utensils } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import FoodCard from "./FoodCard";
 import { Drawer, DrawerContent } from "./ui/drawer";
 import { ScrollArea } from "./ui/scroll-area";
 import { Button } from "./ui/button";
 import { IndianRupee } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { Input } from "./ui/input";
+import { useOrderStore } from "@/stores/useOrderStore";
+import { quality } from "@cloudinary/url-gen/actions/delivery";
 
 const CartDrawer = ({ open, onOpenChange }) => {
+  const [searchParams] = useSearchParams();
+  const tableNo = searchParams.get("table");
   const { cart, getTotalItems, getTotalPrice, clearCart } = useCartStore();
-
+  const { placeOrder } = useOrderStore();
   const isEmpty = Object.keys(cart).length === 0;
+
+  const handleCheckout = async () => {
+    const items = Object.values(cart)
+      .flat()
+      .map((item) => ({ id: item.id, quantity: item.quantity }));
+
+    const order = {
+      tableNo: tableNo ? parseInt(tableNo) : null,
+      items,
+    };
+
+    await placeOrder(order);
+    clearCart();
+  };
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="h-[70vh]">
         <div className="p-4 max-w-screen-md w-full mx-auto h-full flex flex-col">
           {/* Header */}
-          <h3 className="text-xl font-bold mb-4 flex-shrink-0 flex gap-2 items-center">
-            <ShoppingCart className="size-5" strokeWidth={3} />
-            Cart
-          </h3>
+          <div className="flex justify-between">
+            <h3 className="text-xl font-bold mb-4 flex-shrink-0 flex gap-2 items-center">
+              <ShoppingCart className="size-5" strokeWidth={3} />
+              Cart
+            </h3>
+            <Input type="number" className="w-20" value={tableNo} />
+          </div>
 
           {/* Scrollable content */}
           <ScrollArea className="flex-1 pr-2">
@@ -33,7 +56,9 @@ const CartDrawer = ({ open, onOpenChange }) => {
 
                 <div>
                   <h3 className="font-semibold text-lg">Your Cart is Empty</h3>
-                  <p className="text-sm text-muted-foreground">Looks like you haven't added antyhing to your cart yet</p>
+                  <p className="text-sm text-muted-foreground">
+                    Looks like you haven't added antyhing to your cart yet
+                  </p>
                 </div>
               </div>
             ) : (
@@ -63,7 +88,7 @@ const CartDrawer = ({ open, onOpenChange }) => {
                   {getTotalPrice()}
                 </p>
               </div>
-              <Button onClick={clearCart} className="bg-[#ff5200]">
+              <Button onClick={handleCheckout} className="bg-[#ff5200]">
                 Checkout
               </Button>
             </div>

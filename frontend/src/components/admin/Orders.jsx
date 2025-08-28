@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Card,
   CardContent,
@@ -7,38 +7,24 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { IndianRupee } from "lucide-react";
+import { timeAgo } from "@/lib/utils";
 
 // Primary brand color #ff5200
 function OrderCard({ order }) {
-  const formatTime = (date) => {
-    return new Date(date).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const getElapsedTime = (createdAt) => {
-    const created = new Date(createdAt);
-    const now = new Date();
-    const diffMs = now - created;
-    const diffMins = Math.round(diffMs / 60000);
-    return `${diffMins} min ago`;
-  };
-
   return (
     <Card className="w-full overflow-hidden border border-l-4 border-l-[#ff5200] shadow-md hover:shadow-lg transition-shadow mb-4">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div>
             <h3 className="font-semibold text-lg">
-              Order #{order._id.slice(-4)}
+              Order #{order.id}
             </h3>
             <div className="text-sm text-muted-foreground">
-              {getElapsedTime(order.createdAt)}
+              {timeAgo(order.createdAt)} 
             </div>
           </div>
           <Badge className="bg-[#ff5200] hover:bg-[#ff5200]">
-            Seat {order.seatNo}
+            Table {order.tableNo}
           </Badge>
         </div>
       </CardHeader>
@@ -75,12 +61,12 @@ function OrderCard({ order }) {
   );
 }
 
-const Orders = ({orders}) => {
+const Orders = ({ orders }) => {
   return (
     <div>
       <div className="grid gap-4">
         {orders.map((order) => (
-          <OrderCard key={order._id} order={order} />
+          <OrderCard key={order.id} order={order} /> 
         ))}
       </div>
     </div>
