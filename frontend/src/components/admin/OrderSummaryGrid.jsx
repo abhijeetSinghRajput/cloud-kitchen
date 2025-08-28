@@ -1,8 +1,20 @@
 import { Badge } from "@/components/ui/badge";
+import { PackageOpen } from "lucide-react";
 import React from "react";
 
-const OrderSummaryGrid = ({orders}) => {
-  // Accumulate quantities for each item
+const OrderSummaryGrid = ({ orders }) => {
+  if (orders.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] text-center text-gray-500">
+        <PackageOpen size={48} className="mb-4 text-gray-400" />
+        <h2 className="text-xl font-semibold">No Orders Yet</h2>
+        <p className="text-sm text-muted-foreground">
+          Your recent orders will appear here.
+        </p>
+      </div>
+    );
+  }
+
   const itemMap = {};
 
   orders.forEach((order) => {
@@ -19,6 +31,18 @@ const OrderSummaryGrid = ({orders}) => {
   });
 
   const accumulatedItems = Object.values(itemMap);
+
+  if (accumulatedItems.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] text-center text-gray-500">
+        <PackageOpen size={48} className="mb-4 text-gray-400" />
+        <h2 className="text-xl font-semibold">No Pending Orders</h2>
+        <p className="text-sm text-muted-foreground">
+          All items have been completed.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-4 mt-4">
@@ -41,11 +65,9 @@ const OrderSummaryGrid = ({orders}) => {
           <div className="absolute bottom-2 left-2 right-2 text-white">
             <h3 className="font-semibold text-sm">{item.name}</h3>
           </div>
-          <Badge
-            className={
-              "absolute bottom-0 right-0 z-10 text-4xl rounded-none rounded-tl-2xl"
-            }
-          >
+
+          {/* Quantity Badge */}
+          <Badge className="absolute bottom-0 right-0 z-10 text-4xl rounded-none rounded-tl-2xl">
             {item.totalQuantity}
           </Badge>
         </div>

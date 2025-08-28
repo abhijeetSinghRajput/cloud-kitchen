@@ -7,14 +7,24 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { IndianRupee } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { IndianRupee, Loader2, PackageOpen } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 import { useOrderStore } from "@/stores/useOrderStore";
 
 // Primary brand color #ff5200
 function OrderCard({ order }) {
-  const { deleteOrder, markDone } = useOrderStore();
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const { deleteOrder, markDone, loading } = useOrderStore();
 
   return (
     <Card className="w-full overflow-hidden border border-l-4 border-l-[#ff5200] shadow-md hover:shadow-lg transition-shadow mb-4">
@@ -62,52 +72,69 @@ function OrderCard({ order }) {
       </CardFooter>
 
       <div className="flex justify-end gap-2 px-4 pb-3">
-        {/* ✅ Done button or badge */}
-        {order.status === "done" ? (
-          <Badge className="bg-green-600 hover:bg-green-600">Done</Badge>
-        ) : (
+        {order.status === "pending" && (
           <Button
             size="sm"
             className="bg-green-600 hover:bg-green-700"
             onClick={() => markDone(order.id)}
+            disabled={loading.markDone === order.id}
           >
-            Done
+            {loading.markDone === order.id ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              "Done"
+            )}
           </Button>
         )}
 
-        {/* ❌ Delete button with confirmation */}
-        {confirmDelete ? (
-          <>
-            <Button
-              size="sm"
-              variant="destructive"
-              onClick={() => deleteOrder(order.id)}
-            >
-              Confirm Delete
+        {/* ❌ Delete with AlertDialog */}
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button size="sm" className="bg-red-600 hover:bg-red-700">
+              {loading.deleteOrder === order.id ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Delete"
+              )}
             </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => setConfirmDelete(false)}
-            >
-              Cancel
-            </Button>
-          </>
-        ) : (
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={() => setConfirmDelete(true)}
-          >
-            Delete
-          </Button>
-        )}
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Order?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. The order will be permanently
+                removed from the system.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-red-600 hover:bg-red-700"
+                onClick={() => deleteOrder(order.id)}
+              >
+                Confirm Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </Card>
   );
 }
 
 const Orders = ({ orders }) => {
+  if (orders.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] text-center text-gray-500">
+        <PackageOpen size={48} className="mb-4 text-gray-400" />
+        <h2 className="text-xl font-semibold">No Orders Yet</h2>
+        <p className="text-sm text-muted-foreground">
+          Your recent orders will appear here.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="grid gap-4">

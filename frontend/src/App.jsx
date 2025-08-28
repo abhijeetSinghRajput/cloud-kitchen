@@ -7,6 +7,7 @@ import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import FoodCategoryPage from "./pages/admin/FoodCategoryPage";
 import FoodItemPage from "./pages/admin/FoodItemPage";
 import { Toaster } from "sonner";
+import CreateQrPage from "./pages/admin/CreateQrPage";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="dashboard" element={<AdminDashboardPage/>}/>
           <Route path="category" element={<FoodCategoryPage/>}/>
           <Route path="category/:categoryName" element={<FoodItemPage/>}/>
+          <Route path="create-qr" element={<CreateQrPage/>}/>
         </Route>
       </Routes>
       <Toaster/>

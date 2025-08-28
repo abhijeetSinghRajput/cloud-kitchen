@@ -17,7 +17,7 @@ const AdminLayout = () => {
 
   if (loading.checkAuth) {
     return (
-      <div className="flex items-center justify-center h-screen text-lg">
+      <div className="flex items-center justify-center h-svh text-lg">
         <div className="flex gap-2 items-center">
           <Loader className="animate-spin text-sm size-5" />
           <ShinyText speed={2} text={"Checking authentication..."} className="text-sm" />
@@ -28,7 +28,7 @@ const AdminLayout = () => {
 
   if (!authUser) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100">
+      <div className="flex items-center justify-center h-svh bg-gradient-to-br from-orange-50 via-white to-orange-100">
         <div className="max-w-md w-full text-center space-y-6 p-6 rounded-2xl shadow-lg bg-white">
           {/* Brand */}
           <h1 className="text-3xl font-extrabold text-[#ff5200] tracking-tight">

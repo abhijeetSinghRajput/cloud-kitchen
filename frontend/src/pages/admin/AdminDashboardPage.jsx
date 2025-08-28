@@ -34,7 +34,7 @@ const AdminDashboardPage = () => {
             <Orders orders={completedOrders} />
           </TabsContent>
           <TabsContent value="summary">
-            <OrderSummaryGrid orders={orders} />
+            <OrderSummaryGrid orders={pendingOrders} />
           </TabsContent>
         </Tabs>
       </div>

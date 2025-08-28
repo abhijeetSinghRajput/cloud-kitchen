@@ -1,5 +1,5 @@
 import React from "react";
-import { CupSoda, Gauge, LogOut } from "lucide-react";
+import { CupSoda, Gauge, LogOut, QrCode } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -17,6 +17,7 @@ import { Button } from "../ui/button"; // shadcn button
 const links = [
   { label: "Dashboard", path: "/admin/dashboard", icon: Gauge },
   { label: "Category", path: "/admin/category", icon: CupSoda },
+  { label: "Create QR", path: "/admin/create-qr", icon: QrCode },
 ];
 
 const Navbar = () => {
