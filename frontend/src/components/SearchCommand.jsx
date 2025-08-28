@@ -17,24 +17,29 @@ const SearchCommand = ({ open, setOpen }) => {
 
   // ✅ Filter categories & items by tags (case-insensitive)
   const filteredCategories = useMemo(() => {
-    if (!search.trim()) return categories;
-
-    const term = search.toLowerCase();
+    const term = search.trim().toLowerCase();
 
     return categories
       .map((cat) => {
-        const filteredItems = (cat.items || []).filter(
-          (item) =>
-            item.tags?.some((tag) => tag.toLowerCase().includes(term)) ||
-            item.name?.toLowerCase().includes(term) // optional: allow item name too
-        );
+        const filteredItems = term
+          ? (cat.items || []).filter(
+              (item) =>
+                item.tags?.some((tag) => tag.toLowerCase().includes(term)) ||
+                item.name?.toLowerCase().includes(term)
+            )
+          : cat.items || [];
+
         return { ...cat, items: filteredItems };
       })
-      .filter((cat) => cat.items?.length > 0);
+      .filter((cat) => cat.items?.length > 0); 
   }, [categories, search]);
 
   return (
-    <CommandDialog open={open} onOpenChange={setOpen} className="top-0 translate-y-0">
+    <CommandDialog
+      open={open}
+      onOpenChange={setOpen}
+      className="top-0 translate-y-0"
+    >
       <Command className="rounded-lg border shadow-md md:min-w-[450px]">
         {/* ✅ Bind input to our custom filter */}
         <CommandInput
@@ -48,7 +53,7 @@ const SearchCommand = ({ open, setOpen }) => {
             <div key={category.id}>
               <CommandGroup heading={category.name}>
                 {category.items?.map((item) => (
-                  <CommandItem key={item.id}>
+                  <CommandItem key={item.id} className="cursor-pointer">
                     <div className="size-12 rounded-full overflow-hidden flex-shrink-0">
                       <img
                         src={item.image}

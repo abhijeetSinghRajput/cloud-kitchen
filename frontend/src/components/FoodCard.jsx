@@ -3,6 +3,7 @@ import { Card } from "./ui/card";
 import { Plus, Minus, IndianRupee } from "lucide-react";
 import { Button } from "./ui/button";
 import { useCartStore } from "@/stores/useCartStore";
+import { Badge } from "./ui/badge";
 
 const FoodCard = ({ food, categoryName }) => {
   const { addToCart, removeFromCart, cart } = useCartStore();
@@ -20,7 +21,14 @@ const FoodCard = ({ food, categoryName }) => {
       <div className="flex flex-col justify-between flex-1 p-2 space-y-2">
         <div>
           <h4 className="text-base font-bold">{food.name}</h4>
-          <p className="text-muted-foreground text-sm">{food.desc}</p>
+          <p className="text-muted-foreground text-sm">{food.description}</p>
+        </div>
+        <div className="flex gap-1 flex-wrap">
+          {
+            food.tags.map(tag=>(
+              <Badge variant={"secondary"} className={"rounded-full"}>{tag}</Badge>
+            ))
+          }
         </div>
         <div className="flex gap-4 space-y-4 justify-between items-center">
           <div className="flex items-center gap-0.5 text-xl font-bold text-orange-500">
