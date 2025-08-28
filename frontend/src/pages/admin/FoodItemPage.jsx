@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import FoodItemDialog from "@/components/admin/FoodItemDialog";
 import { useInventoryStore } from "@/stores/useInventoryStore";
 import { Badge } from "@/components/ui/badge";
+import TooltipWrapper from "@/components/TooltipWrapper";
 
 const FoodItemPage = () => {
   const { categoryName: slug } = useParams();
@@ -129,13 +130,15 @@ const FoodItemPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link
-            to="/admin/category"
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ChevronLeft className="size-5" />
-            Categories
-          </Link>
+          <TooltipWrapper message="back to category">
+            <Link
+              to="/admin/category"
+              className="inline-flex hover:bg-accent p-1 rounded-md items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ChevronLeft className="size-5" />
+            </Link>
+          </TooltipWrapper>
+
           <div className="flex gap-2 items-center">
             <h1 className="text-2xl font-bold">{category?.name}</h1>
             <Badge>

@@ -50,11 +50,11 @@ export const useInventoryStore = create((set, get) => ({
 
     try {
       const snapshot = await getDocs(collection(db, "categories"));
-      const categories = snapshot.docs.map((doc) => ({ 
-        id: doc.id, 
-        ...doc.data() 
+      const categories = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
       }));
-      
+
       set({ categories });
       return categories;
     } catch (err) {
@@ -117,6 +117,56 @@ export const useInventoryStore = create((set, get) => ({
       return null;
     } finally {
       setLoading("fetchItems", false);
+    }
+  },
+
+  // ✅ Fetch all categories with their items (JOIN style)
+  fetchCategoriesWithItems: async () => {
+    const { setLoading, setError } = get();
+    setLoading("fetchCategories");
+    set({ error: "" });
+
+    try {
+      // 1. Fetch categories
+      const categoriesSnap = await getDocs(collection(db, "categories"));
+      const categories = categoriesSnap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      // 2. For each category, fetch items
+      const categoriesWithItems = await Promise.all(
+        categories.map(async (cat) => {
+          const q = query(
+            collection(db, "items"),
+            where("categoryId", "==", cat.id)
+          );
+          const itemsSnap = await getDocs(q);
+          const items = itemsSnap.docs.map((itemDoc) => ({
+            id: itemDoc.id,
+            ...itemDoc.data(),
+          }));
+
+          return { ...cat, items };
+        })
+      );
+
+      // 3. Update Zustand state
+      set({
+        categories: categoriesWithItems,
+        items: categoriesWithItems.reduce((acc, cat) => {
+          acc[cat.id] = cat.items;
+          return acc;
+        }, {}),
+      });
+
+      return categoriesWithItems;
+    } catch (err) {
+      console.error("Error fetching categories with items:", err);
+      setError(err, "fetchCategories");
+      throw err;
+    } finally {
+      setLoading("fetchCategories", false);
     }
   },
 
@@ -194,7 +244,7 @@ export const useInventoryStore = create((set, get) => ({
 
       // Use batch for better performance and atomicity
       const batch = writeBatch(db);
-      
+
       categoryIds.forEach((id) => {
         const docRef = doc(db, "categories", id);
         batch.update(docRef, {
@@ -231,7 +281,8 @@ export const useInventoryStore = create((set, get) => ({
     try {
       if (!categoryId) throw new Error("Category ID is required");
       if (!item || !item.name) throw new Error("Item name is required");
-      if (!item.price || item.price <= 0) throw new Error("Valid price is required");
+      if (!item.price || item.price <= 0)
+        throw new Error("Valid price is required");
 
       const docRef = doc(collection(db, "items"));
       const itemData = {
@@ -284,7 +335,7 @@ export const useInventoryStore = create((set, get) => ({
       };
 
       // Remove undefined values
-      Object.keys(updateData).forEach(key => {
+      Object.keys(updateData).forEach((key) => {
         if (updateData[key] === undefined) {
           delete updateData[key];
         }
@@ -296,9 +347,10 @@ export const useInventoryStore = create((set, get) => ({
       set((state) => ({
         items: {
           ...state.items,
-          [categoryId]: state.items[categoryId]?.map((i) =>
-            i.id === itemId ? { ...i, ...updateData } : i
-          ) || [],
+          [categoryId]:
+            state.items[categoryId]?.map((i) =>
+              i.id === itemId ? { ...i, ...updateData } : i
+            ) || [],
         },
       }));
 
@@ -327,7 +379,10 @@ export const useInventoryStore = create((set, get) => ({
         try {
           await deleteImage(item.image);
         } catch (imageError) {
-          console.warn("Failed to delete image, continuing with item deletion:", imageError);
+          console.warn(
+            "Failed to delete image, continuing with item deletion:",
+            imageError
+          );
           // Continue with item deletion even if image deletion fails
         }
       }
@@ -339,9 +394,8 @@ export const useInventoryStore = create((set, get) => ({
       set((state) => ({
         items: {
           ...state.items,
-          [item.categoryId]: state.items[item.categoryId]?.filter(
-            (i) => i.id !== item.id
-          ) || [],
+          [item.categoryId]:
+            state.items[item.categoryId]?.filter((i) => i.id !== item.id) || [],
         },
       }));
 
@@ -363,7 +417,7 @@ export const useInventoryStore = create((set, get) => ({
 
     try {
       const batch = writeBatch(db);
-      
+
       updates.forEach(({ id, data }) => {
         const docRef = doc(db, "items", id);
         batch.update(docRef, {
@@ -376,15 +430,16 @@ export const useInventoryStore = create((set, get) => ({
 
       // Update local state
       const updateMap = new Map(updates.map(({ id, data }) => [id, data]));
-      
+
       set((state) => ({
         items: {
           ...state.items,
-          [categoryId]: state.items[categoryId]?.map((item) =>
-            updateMap.has(item.id) 
-              ? { ...item, ...updateMap.get(item.id) }
-              : item
-          ) || [],
+          [categoryId]:
+            state.items[categoryId]?.map((item) =>
+              updateMap.has(item.id)
+                ? { ...item, ...updateMap.get(item.id) }
+                : item
+            ) || [],
         },
       }));
 

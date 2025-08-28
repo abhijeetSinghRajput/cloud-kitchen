@@ -25,6 +25,7 @@ import ImageUpload from "../ImageUpload";
 import { Trash2, Loader2, AlertCircle } from "lucide-react";
 import { useCloudinaryStore } from "@/stores/useCloudinaryStore";
 import { useInventoryStore } from "@/stores/useInventoryStore";
+import { cn } from "@/lib/utils";
 
 const FoodItemDialog = ({
   item = null,
@@ -271,7 +272,7 @@ const FoodItemDialog = ({
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter food name"
-                className={validationErrors.name ? "border-red-500" : ""}
+                className={cn("h-11", validationErrors.name ? "ring-2 ring-destructive" : "")}
               />
               {validationErrors.name && (
                 <p className="text-sm text-red-500 mt-1">{validationErrors.name}</p>
@@ -287,7 +288,7 @@ const FoodItemDialog = ({
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Write a short description..."
-                className={validationErrors.description ? "border-red-500" : ""}
+                className={cn("h-11", validationErrors.description ? "ring-2 ring-destructive" : "")}
               />
               {validationErrors.description && (
                 <p className="text-sm text-red-500 mt-1">{validationErrors.description}</p>
@@ -306,7 +307,7 @@ const FoodItemDialog = ({
                 value={formData.price}
                 onChange={handleChange}
                 placeholder="100"
-                className={validationErrors.price ? "border-red-500" : ""}
+                className={cn("h-11", validationErrors.price ? "ring-2 ring-destructive" : "")}
               />
               {validationErrors.price && (
                 <p className="text-sm text-red-500 mt-1">{validationErrors.price}</p>
@@ -322,6 +323,7 @@ const FoodItemDialog = ({
                 value={formData.tags}
                 onChange={handleChange}
                 placeholder="spicy, veg, popular"
+                className="h-11"
               />
               <p className="text-sm text-muted-foreground mt-1">
                 Separate multiple tags with commas

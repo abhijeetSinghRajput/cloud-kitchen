@@ -5,14 +5,13 @@ import FoodListDrawer from "../FoodListDrawer";
 import { Badge } from "../ui/badge";
 import { useCartStore } from "@/stores/useCartStore";
 import { useInventoryStore } from "@/stores/useInventoryStore";
-import { Skeleton } from "../ui/skeleton";
 import FoodCategorySkeleton from "./FoodCategorySkeleton";
 
 const FoodCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { getCategoryItemQuantity } = useCartStore();
-  const { categories, items, getAllItems, fetchCategories, loading } = useInventoryStore();
+  const { categories, items, getAllItems, fetchCategoriesWithItems, loading } = useInventoryStore();
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -24,7 +23,7 @@ const FoodCategory = () => {
   );
 
   useEffect(() => {
-    fetchCategories();
+    fetchCategoriesWithItems();
     getAllItems();
   }, []);
 

@@ -2,6 +2,7 @@
 //.jsx
 import SelectCategoryDrawer from "@/components/admin/SelectCategoryDrawer";
 import TooltipWrapper from "@/components/TooltipWrapper";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { slug } from "@/lib/utils";
 import { useInventoryStore } from "@/stores/useInventoryStore";
@@ -10,12 +11,12 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const FoodCategoryPage = () => {
-  const { categories, fetchCategories } = useInventoryStore();
+  const { categories, fetchCategoriesWithItems } = useInventoryStore();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   useEffect(() => {
-    fetchCategories();
+    fetchCategoriesWithItems();
   }, []);
 
   const availableCategories = categories.filter(
@@ -30,7 +31,7 @@ const FoodCategoryPage = () => {
           <TooltipWrapper message="Add Category">
             <Button
               variant="ghost"
-              className="border-2 rounded-lg border-dashed flex items-center justify-center cursor-pointer hover:bg-muted h-auto"
+              className="border-2 aspect-square rounded-lg border-dashed flex items-center justify-center cursor-pointer hover:bg-muted h-auto"
               onClick={() => setOpenDrawer(true)}
             >
               <Plus className="size-1/3 text-muted-foreground" />
@@ -41,8 +42,11 @@ const FoodCategoryPage = () => {
               <Link
                 key={index}
                 to={slug(cat.name)}
-                className="hover:bg-muted aspect-square hover:brightness-90 rounded-lg overflow-hidden"
+                className="relative hover:bg-muted aspect-square hover:brightness-90 rounded-lg overflow-hidden"
               >
+                {(cat.items.length > 0) && (
+                  <Badge className={"absolute z-10 top-0 right-0 rounded-full"}>{`${cat.items.length}`}</Badge>
+                )}
                 <img src={cat.image} className="w-full h-full object-contain" />
               </Link>
             );
