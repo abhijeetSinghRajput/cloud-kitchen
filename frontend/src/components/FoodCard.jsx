@@ -4,6 +4,7 @@ import { Plus, Minus, IndianRupee } from "lucide-react";
 import { Button } from "./ui/button";
 import { useCartStore } from "@/stores/useCartStore";
 import { cn } from "@/lib/utils";
+import ImageWithSkeleton from "./ImageWithSkeleton";
 
 const FoodCard = ({ food, categoryName, className, imageClassName }) => {
   const { addToCart, removeFromCart, cart } = useCartStore();
@@ -16,7 +17,7 @@ const FoodCard = ({ food, categoryName, className, imageClassName }) => {
   return (
     <Card className={cn("flex gap-2 overflow-hidden", className)}>
       <div className={cn("w-40", imageClassName)}>
-        <img
+        <ImageWithSkeleton
           src={food.image}
           alt={food.name}
           className="w-full h-full object-cover rounded-md"

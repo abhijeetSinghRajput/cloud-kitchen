@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { CupSoda, Gauge, LogOut, QrCode } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
@@ -13,6 +14,7 @@ import { getAvatarFallbackText } from "@/lib/utils";
 import { Link, NavLink } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { Button } from "../ui/button"; // shadcn button
+import { ExpandedTabs } from "../ui/expanded-tabs";
 
 const links = [
   { label: "Dashboard", path: "/admin/dashboard", icon: Gauge },
@@ -32,25 +34,45 @@ const Navbar = () => {
 
         <div className="flex items-center gap-6">
           {/* Nav Links */}
-          <ul className="flex gap-4 text-sm text-primary/70">
+
+          <ul className="hidden sm:flex gap-2 relative bg-primary-foreground p-1 rounded-lg">
             {links.map((link) => (
-              <li key={link.path}>
-                <NavLink
-                  to={link.path}
-                  className={({ isActive }) =>
-                    `transition-colors py-1.5 px-2 rounded-lg flex gap-2 items-center font-semibold ${
-                      isActive
-                        ? "text-primary-foreground bg-primary"
-                        : "text-primary/70 hover:text-primary"
-                    }`
-                  }
-                >
-                  <link.icon className="size-5" />
-                  <span className="hidden sm:block">{link.label}</span>
-                </NavLink>
-              </li>
+              <NavLink
+                key={link.path}
+                to={link.path}
+                className={({ isActive }) =>
+                  `relative z-10 transition-colors py-1.5 px-3 rounded-lg flex gap-2 items-center font-semibold ${
+                    isActive
+                      ? "text-primary-foreground"
+                      : "text-primary/70 hover:text-primary"
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeBackground"
+                        className="absolute inset-0 bg-primary rounded-lg"
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 25,
+                        }}
+                      />
+                    )}
+                    <link.icon className="size-5 relative z-10" />
+                    <span className="relative z-10">{link.label}</span>
+                  </>
+                )}
+              </NavLink>
             ))}
           </ul>
+
+          <ExpandedTabs
+            className={"sm:hidden border-none bg-transparent shadow-none"}
+            tabs={links}
+          />
 
           {/* If user not logged in -> show login button */}
           {!authUser ? (

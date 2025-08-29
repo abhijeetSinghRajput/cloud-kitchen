@@ -8,6 +8,7 @@ import FoodItemDialog from "@/components/admin/FoodItemDialog";
 import { useInventoryStore } from "@/stores/useInventoryStore";
 import { Badge } from "@/components/ui/badge";
 import TooltipWrapper from "@/components/TooltipWrapper";
+import ImageWithSkeleton from "@/components/ImageWithSkeleton";
 
 const FoodItemPage = () => {
   const { categoryName: slug } = useParams();
@@ -141,23 +142,13 @@ const FoodItemPage = () => {
 
           <div className="flex gap-2 items-center">
             <h1 className="text-2xl font-bold">{category?.name}</h1>
-            <Badge>
-              {categoryItems.length} item{categoryItems.length !== 1 ? "s" : ""}
-            </Badge>
+            {categoryItems.length > 0 && (
+              <Badge className={"rounded-full"}>{categoryItems.length}</Badge>
+            )}
           </div>
         </div>
 
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={loading.fetchItems}
-          >
-            <RefreshCw
-              className={`size-4 ${loading.fetchItems ? "animate-spin" : ""}`}
-            />
-          </Button>
           <Button onClick={() => handleOpenDialog()}>
             <Plus className="mr-2 size-4" />
             Add Item
@@ -170,9 +161,23 @@ const FoodItemPage = () => {
         <Alert variant="destructive">
           <AlertDescription className="flex items-center justify-between">
             <span>{error}</span>
-            <Button variant="outline" size="sm" onClick={() => clearError()}>
-              Dismiss
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRefresh}
+                disabled={loading.fetchItems}
+              >
+                <RefreshCw
+                  className={`size-4 ${
+                    loading.fetchItems ? "animate-spin" : ""
+                  }`}
+                />
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => clearError()}>
+                Dismiss
+              </Button>
+            </div>
           </AlertDescription>
         </Alert>
       )}
@@ -206,7 +211,7 @@ const FoodItemPage = () => {
                 <CardContent className="p-0">
                   <div className="aspect-square overflow-hidden bg-muted">
                     {item.image ? (
-                      <img
+                      <ImageWithSkeleton
                         src={item.image}
                         alt={item.name}
                         className="w-full h-full object-cover"
@@ -272,10 +277,6 @@ const FoodItemPage = () => {
             <p className="text-muted-foreground mb-4">
               Start by adding your first food item to this category
             </p>
-            <Button onClick={() => handleOpenDialog()}>
-              <Plus className="mr-2 size-4" />
-              Add First Item
-            </Button>
           </div>
         )}
       </div>

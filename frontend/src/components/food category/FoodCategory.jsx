@@ -6,6 +6,7 @@ import { Badge } from "../ui/badge";
 import { useCartStore } from "@/stores/useCartStore";
 import { useInventoryStore } from "@/stores/useInventoryStore";
 import FoodCategorySkeleton from "./FoodCategorySkeleton";
+import ImageWithSkeleton from "../ImageWithSkeleton";
 
 const FoodCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -48,8 +49,9 @@ const FoodCategory = () => {
                   className="border-none overflow-hidden aspect-square shadow-none hover:brightness-90 cursor-pointer transition-all"
                   onClick={() => handleCategoryClick(cat)}
                 >
-                  <img
+                  <ImageWithSkeleton
                     src={cat.image}
+                    alt={cat.name}
                     className="w-full h-full object-contain"
                   />
                 </Card>

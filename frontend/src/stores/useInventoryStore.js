@@ -23,6 +23,7 @@ export const useInventoryStore = create((set, get) => ({
     addItem: false,
     updateItem: false,
     deleteItem: false,
+    fetchCategoriesWithItems: false,
   },
   error: "",
 
@@ -123,7 +124,7 @@ export const useInventoryStore = create((set, get) => ({
   // ✅ Fetch all categories with their items (JOIN style)
   fetchCategoriesWithItems: async () => {
     const { setLoading, setError } = get();
-    setLoading("fetchCategories");
+    setLoading("fetchCategoriesWithItems");
     set({ error: "" });
 
     try {
@@ -166,7 +167,7 @@ export const useInventoryStore = create((set, get) => ({
       setError(err, "fetchCategories");
       throw err;
     } finally {
-      setLoading("fetchCategories", false);
+      setLoading("fetchCategoriesWithItems", false);
     }
   },
 

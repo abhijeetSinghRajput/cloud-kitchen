@@ -1,18 +1,13 @@
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { PackageOpen } from "lucide-react";
 import React from "react";
+import EmptySummary from "./empty-state/EmptySummary";
+import ImageWithSkeleton from "../ImageWithSkeleton";
 
-const OrderSummaryGrid = ({ orders }) => {
+const OrderSummaryGrid = ({ orders, className }) => {
   if (orders.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[60vh] text-center text-gray-500">
-        <PackageOpen size={48} className="mb-4 text-gray-400" />
-        <h2 className="text-xl font-semibold">No Orders Yet</h2>
-        <p className="text-sm text-muted-foreground">
-          Your recent orders will appear here.
-        </p>
-      </div>
-    );
+    return <EmptySummary/>
   }
 
   const itemMap = {};
@@ -34,8 +29,14 @@ const OrderSummaryGrid = ({ orders }) => {
 
   if (accumulatedItems.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-[60vh] text-center text-gray-500">
+      <div
+        className={cn(
+          "flex flex-col items-center justify-center h-[60vh] text-center text-gray-500",
+          className
+        )}
+      >
         <PackageOpen size={48} className="mb-4 text-gray-400" />
+        <img src="/popcorn.svg" className="grayscale max-w-80" />
         <h2 className="text-xl font-semibold">No Pending Orders</h2>
         <p className="text-sm text-muted-foreground">
           All items have been completed.
@@ -45,14 +46,19 @@ const OrderSummaryGrid = ({ orders }) => {
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-4 mt-4">
+    <div
+      className={cn(
+        "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-4 mt-4",
+        className
+      )}
+    >
       {accumulatedItems.map((item) => (
         <div
           key={item.itemId}
           className="relative rounded-2xl overflow-hidden shadow-md group"
         >
           {/* Food Image */}
-          <img
+          <ImageWithSkeleton
             src={item.image}
             alt={item.name}
             className="w-full h-40 object-cover"

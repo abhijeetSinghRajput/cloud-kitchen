@@ -50,11 +50,16 @@ const CartDrawer = ({ open, onOpenChange }) => {
           <ScrollArea className="flex-1 pr-2">
             {isEmpty ? (
               <div className="h-full mt-8 flex flex-col gap-2 items-center text-center">
-                <div className="bg-muted size-24 rounded-full flex items-center justify-center">
-                  <Utensils size={34} strokeWidth={2} className="opacity-50" />
+                {/* <img src="empty-cart.svg" alt="empty cart" className="size-52" /> */}
+                <div className="size-40 rounded-full bg-muted aspect-square flex items-center justify-center">
+                  <img
+                    src="empty-bag.svg"
+                    alt="empty cart"
+                    className="size-[60%]"
+                  />
                 </div>
 
-                <div>
+                <div className="max-w-md">
                   <h3 className="font-semibold text-lg">Your Cart is Empty</h3>
                   <p className="text-sm text-muted-foreground">
                     Looks like you haven't added antyhing to your cart yet

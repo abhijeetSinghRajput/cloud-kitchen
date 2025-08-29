@@ -21,6 +21,8 @@ import {
 import { IndianRupee, Loader2, PackageOpen } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 import { useOrderStore } from "@/stores/useOrderStore";
+import EmptyPendingOrder from "./empty-state/EmptyPendingOrder";
+import EmptyCompletedOrder from "./empty-state/EmptyCompletedOrder";
 
 // Primary brand color #ff5200
 function OrderCard({ order }) {
@@ -122,21 +124,13 @@ function OrderCard({ order }) {
   );
 }
 
-const Orders = ({ orders }) => {
+const Orders = ({ orders, type = "pending" }) => {
   if (orders.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[60vh] text-center text-gray-500">
-        <PackageOpen size={48} className="mb-4 text-gray-400" />
-        <h2 className="text-xl font-semibold">No Orders Yet</h2>
-        <p className="text-sm text-muted-foreground">
-          Your recent orders will appear here.
-        </p>
-      </div>
-    );
+    return type === "pending" ? <EmptyPendingOrder /> : <EmptyCompletedOrder />;
   }
 
   return (
-    <div>
+    <div className="">
       <div className="grid gap-4">
         {orders.map((order) => (
           <OrderCard key={order.id} order={order} />

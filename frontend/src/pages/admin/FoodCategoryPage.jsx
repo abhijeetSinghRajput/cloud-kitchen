@@ -1,6 +1,8 @@
 // pages/admin/FoodCategoryPage
 //.jsx
 import SelectCategoryDrawer from "@/components/admin/SelectCategoryDrawer";
+import FoodCategorySkeleton from "@/components/food category/FoodCategorySkeleton";
+import ImageWithSkeleton from "@/components/ImageWithSkeleton";
 import TooltipWrapper from "@/components/TooltipWrapper";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const FoodCategoryPage = () => {
-  const { categories, fetchCategoriesWithItems } = useInventoryStore();
+  const { categories, fetchCategoriesWithItems, loading } = useInventoryStore();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
@@ -37,20 +39,29 @@ const FoodCategoryPage = () => {
               <Plus className="size-1/3 text-muted-foreground" />
             </Button>
           </TooltipWrapper>
-          {availableCategories.map((cat, index) => {
-            return (
+
+          {loading.fetchCategoriesWithItems ? (
+            <FoodCategorySkeleton />
+          ) : (
+            availableCategories.map((cat) => (
               <Link
-                key={index}
+                key={cat.id}
                 to={slug(cat.name)}
                 className="relative hover:bg-muted aspect-square hover:brightness-90 rounded-lg overflow-hidden"
               >
-                {(cat.items.length > 0) && (
-                  <Badge className={"absolute z-10 top-0 right-0 rounded-full"}>{`${cat.items.length}`}</Badge>
+                {cat.items.length > 0 && (
+                  <Badge className="absolute z-10 top-0 right-0 rounded-full">
+                    {cat.items.length}
+                  </Badge>
                 )}
-                <img src={cat.image} className="w-full h-full object-contain" />
+                <ImageWithSkeleton
+                  src={cat.image}
+                  alt={cat.name}
+                  className="w-full h-full object-contain"
+                />
               </Link>
-            );
-          })}
+            ))
+          )}
         </div>
       </div>
       <SelectCategoryDrawer
