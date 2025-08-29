@@ -7,6 +7,8 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 import { db } from "@/firebase";
 import { toast } from "sonner";
@@ -16,10 +18,12 @@ export const useSubscriptionStore = create((set) => ({
   loading: {
     requestSubscription: false,
     fetchSubscriptions: false,
+    deleteSubscription: false,
   },
   errors: {
     requestSubscription: "",
     fetchSubscriptions: "",
+    deleteSubscription: "",
   },
 
   // ✅ Request a new subscription
@@ -99,6 +103,29 @@ export const useSubscriptionStore = create((set) => ({
         loading: { ...state.loading, fetchSubscriptions: false },
       }));
       toast.error("❌ Something went wrong while setting up listener.");
+    }
+  },
+
+  // ✅ Delete a subscription by ID
+  deleteSubscription: async (id) => {
+    set((state) => ({
+      loading: { ...state.loading, [`delete_${id}`]: true },
+      errors: { ...state.errors, deleteSubscription: "" },
+    }));
+
+    try {
+      await deleteDoc(doc(db, "subscriptions", id));
+      toast.success("🗑️ Subscription deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting subscription:", error);
+      set((state) => ({
+        errors: { ...state.errors, deleteSubscription: error.message },
+      }));
+      toast.error("❌ Failed to delete subscription.");
+    } finally {
+      set((state) => ({
+        loading: { ...state.loading, [`delete_${id}`]: false },
+      }));
     }
   },
 }));

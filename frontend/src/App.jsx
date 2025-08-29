@@ -10,6 +10,7 @@ import { Toaster } from "sonner";
 import CreateQrPage from "./pages/admin/CreateQrPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SubscriptionPage from "./pages/SubscriptionPage";
+import SubscribersPage from "./pages/admin/SubscribersPage";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="category" element={<FoodCategoryPage />} />
           <Route path="category/:categoryName" element={<FoodItemPage />} />
           <Route path="create-qr" element={<CreateQrPage />} />
+          <Route path="subscribers" element={<SubscribersPage />} />
           {/* Catch-all for unknown admin routes */}
           <Route path="*" element={<NotFoundPage fallbackRoute="/admin/dashboard" btnLabel={"Back To Dashboard"} />} />
         </Route>

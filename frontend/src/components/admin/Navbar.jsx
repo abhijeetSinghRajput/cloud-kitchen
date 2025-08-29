@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { CupSoda, Gauge, LogOut, QrCode } from "lucide-react";
+import { CupSoda, Gauge, LogOut, QrCode, Users2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -20,6 +20,7 @@ const links = [
   { label: "Dashboard", path: "/admin/dashboard", icon: Gauge },
   { label: "Category", path: "/admin/category", icon: CupSoda },
   { label: "Create QR", path: "/admin/create-qr", icon: QrCode },
+  {label: "Subscribers", path: "/admin/subscribers", icon: Users2}
 ];
 
 const Navbar = () => {
@@ -42,13 +43,13 @@ const Navbar = () => {
         <div className="flex items-center gap-6">
           {/* Nav Links */}
 
-          <ul className="hidden sm:flex gap-2 relative bg-primary-foreground p-1 rounded-lg">
+          <ul className="hidden md:flex gap-2 relative bg-primary-foreground p-1 rounded-lg">
             {links.map((link) => (
               <NavLink
                 key={link.path}
                 to={link.path}
                 className={({ isActive }) =>
-                  `relative z-10 transition-colors py-1.5 px-3 rounded-lg flex gap-2 items-center font-semibold ${
+                  `relative z-10 transition-colors py-1.5 px-3 text-sm rounded-lg flex gap-2 items-center font-semibold ${
                     isActive
                       ? "text-primary-foreground"
                       : "text-primary/70 hover:text-primary"
@@ -77,7 +78,7 @@ const Navbar = () => {
           </ul>
 
           <ExpandedTabs
-            className={"sm:hidden border-none bg-transparent shadow-none"}
+            className={"md:hidden border-none bg-transparent shadow-none"}
             tabs={links}
           />
 
