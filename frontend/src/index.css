@@ -66,3 +66,144 @@
     @apply bg-background text-foreground;
   }
 }
+.landing-button {
+  position: relative;
+  background: linear-gradient(135deg, #25d366, rgba(18, 140, 126, 0.7)); /* WhatsApp green */
+  background-size: 200% 200%;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-radius: 50px;
+  border: none;
+  padding: 1rem 1rem 1rem 1rem;
+  color: white;
+  cursor: pointer;
+  isolation: isolate;
+  z-index: 15;
+  box-shadow: 0 0 40px rgba(37, 211, 102, 0.4),
+    0 0 80px rgba(18, 140, 126, 0.3),
+    0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: glow-pulse 3s ease-in-out infinite alternate;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.5px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-arrow-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  color: #075e54; /* dark WhatsApp green */
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.landing-button:hover .button-arrow-circle {
+  background: rgba(255, 255, 255, 1);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.landing-button span {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.landing-button:hover span {
+  transform: scale(1.01);
+}
+
+.landing-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.6s ease;
+  z-index: 1;
+}
+
+.landing-button::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  background-size: 200% 200%;
+  border-radius: 50px;
+  z-index: -1;
+  animation: border-dance 4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.landing-button:hover {
+  box-shadow: 0 0 60px rgba(37, 211, 102, 0.2),
+    0 0 120px rgba(18, 140, 126, 0.2),
+    0 0 180px rgba(7, 94, 84, 0.2),
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px) scale(1.01);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation-duration: 1.5s;
+}
+
+.landing-button:hover::before {
+  left: 100%;
+}
+
+.landing-button:hover::after {
+  opacity: 1;
+}
+
+.landing-button:active {
+  transform: translateY(-2px) scale(1.02);
+  transition: all 0.1s ease;
+}
+
+@keyframes glow-pulse {
+  0% {
+    filter: brightness(1) saturate(1);
+  }
+  100% {
+    filter: brightness(1.1) saturate(1.2);
+  }
+}
+
+@keyframes border-dance {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+

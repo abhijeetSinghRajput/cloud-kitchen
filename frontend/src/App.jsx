@@ -9,12 +9,14 @@ import FoodItemPage from "./pages/admin/FoodItemPage";
 import { Toaster } from "sonner";
 import CreateQrPage from "./pages/admin/CreateQrPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import SubscriptionPage from "./pages/SubscriptionPage";
 
 const App = () => {
   return (
     <ThemeProvider defaultTheme="light" storageKey="theme">
       <Routes>
         <Route path="/" element={<Homepage />} />
+        <Route path="/subscription" element={<SubscriptionPage />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboardPage />} />
           <Route path="dashboard" element={<AdminDashboardPage />} />

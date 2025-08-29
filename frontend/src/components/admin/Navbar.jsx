@@ -29,7 +29,14 @@ const Navbar = () => {
     <nav className="sticky z-50 top-0 bg-primary-foreground shadow-md left-0">
       <div className="max-w-screen-xl mx-auto flex justify-between items-center px-4 py-2">
         <h1 className="text-[#ff5200] font-semibold">
-          <Link to={"/"}>Cloud Kitchen</Link>
+          <Link to={"/"} className="flex gap-1 items-center">
+            <img
+              src="/logo-mini.svg"
+              alt="cloud kitchen logo"
+              className="h-10"
+            />
+            <img src="/logo.svg" alt="cloud kitchen logo" className="h-4 hidden sm:block" />
+          </Link>
         </h1>
 
         <div className="flex items-center gap-6">
