@@ -25,7 +25,7 @@ const Navbar = ({ authUser = null }) => {
             <img
               src="/logo.svg"
               alt="cloud kitchen logo"
-              className="h-[18px]"
+              className="h-[18px] logo"
             />
           </Link>
         </h1>
