@@ -11,8 +11,15 @@ import CreateQrPage from "./pages/admin/CreateQrPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SubscriptionPage from "./pages/SubscriptionPage";
 import SubscribersPage from "./pages/admin/SubscribersPage";
+import useOnlineStatus from "./hooks/useOnlineStatus";
+import NoInternet from "./components/NoInternet";
 
 const App = () => {
+  const {isOnline, isOffline} = useOnlineStatus();
+  if(isOffline){
+    return <NoInternet/>
+  }
+
   return (
     <ThemeProvider defaultTheme="light" storageKey="theme">
       <Routes>

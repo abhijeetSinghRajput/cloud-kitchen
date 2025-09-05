@@ -1,10 +1,8 @@
-// AnimatedTabs.jsx
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 
-const AnimatedTabs = ({ 
-  tabs, 
-  defaultValue, 
+const AnimatedTabs = ({
+  tabs,
+  defaultValue,
   className = "",
   tabsListClassName = "",
   tabContentClassName = "",
@@ -12,22 +10,39 @@ const AnimatedTabs = ({
 }) => {
   const [activeTab, setActiveTab] = useState(defaultValue || tabs[0]?.value);
   const [highlightStyle, setHighlightStyle] = useState({});
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const tabRefs = useRef([]);
 
   useEffect(() => {
-    const activeIndex = tabs.findIndex(tab => tab.value === activeTab);
-    const el = tabRefs.current[activeIndex];
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      const parentRect = el.parentElement.getBoundingClientRect();
-      setHighlightStyle({
-        left: rect.left - parentRect.left,
-        top: rect.top - parentRect.top,
-        width: rect.width,
-        height: rect.height,
-      });
-    }
+    const updateHighlight = () => {
+      const activeIndex = tabs.findIndex(tab => tab.value === activeTab);
+      const el = tabRefs.current[activeIndex];
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        const parentRect = el.parentElement.getBoundingClientRect();
+        setHighlightStyle({
+          left: rect.left - parentRect.left,
+          top: rect.top - parentRect.top,
+          width: rect.width,
+          height: rect.height,
+        });
+      }
+    };
+
+    updateHighlight();
+    
+    // Add resize listener to recalculate on window resize
+    window.addEventListener('resize', updateHighlight);
+    return () => window.removeEventListener('resize', updateHighlight);
   }, [activeTab, tabs]);
+
+  const handleTabChange = (newTab) => {
+    if (newTab !== activeTab) {
+      setIsTransitioning(true);
+      setActiveTab(newTab);
+      setTimeout(() => setIsTransitioning(false), 200);
+    }
+  };
 
   const activeTabContent = tabs.find(tab => tab.value === activeTab)?.content;
 
@@ -35,16 +50,16 @@ const AnimatedTabs = ({
     <div className={`${className}`}>
       {/* Tabs List */}
       <div
-        className={`relative w-max inline-flex rounded-lg bg-muted p-1 ${tabsListClassName}`}
+        className={`relative inline-flex rounded-xl bg-muted p-1 ${tabsListClassName}`}
+        style={{ width: tabsListClassName.includes('w-full') ? '100%' : 'fit-content' }}
       >
         {/* Highlight */}
-        <motion.div
+        <div
           className="absolute bg-background rounded-lg shadow-sm border"
-          animate={highlightStyle}
-          transition={{
-            type: "spring",
-            stiffness: 300,
-            damping: 30,
+          style={{
+            ...highlightStyle,
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            zIndex: 1
           }}
         />
 
@@ -53,12 +68,17 @@ const AnimatedTabs = ({
           <button
             key={tab.value}
             ref={(el) => (tabRefs.current[index] = el)}
-            className={`relative z-10 py-1.5 px-4 text-sm font-medium transition-colors rounded-md ${
+            className={`relative z-10 py-2 px-4 text-sm font-medium transition-all duration-200 rounded-md ${
+              tabsListClassName.includes('w-full') ? 'flex-1' : ''
+            } ${
               activeTab === tab.value
                 ? "text-foreground"
                 : "text-muted-foreground hover:text-foreground"
             }`}
-            onClick={() => setActiveTab(tab.value)}
+            onClick={() => handleTabChange(tab.value)}
+            style={{
+              transition: 'color 0.2s ease-in-out'
+            }}
           >
             {tab.title}
           </button>
@@ -66,21 +86,19 @@ const AnimatedTabs = ({
       </div>
 
       {/* Tab Content */}
-      <AnimatePresence mode="wait">
-        <motion.div
+      <div className={`mt-4 ${tabContentClassName}`}>
+        <div
           key={activeTab}
-          className={`mt-4 ${tabContentClassName}`}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{
-            duration: 0.2,
-            ease: "easeInOut",
+          className="tab-content"
+          style={{
+            opacity: isTransitioning ? 0 : 1,
+            transform: isTransitioning ? 'translateX(10px)' : 'translateX(0px)',
+            transition: 'opacity 0.2s ease-in-out, transform 0.2s ease-in-out'
           }}
         >
           {activeTabContent}
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      </div>
     </div>
   );
 };

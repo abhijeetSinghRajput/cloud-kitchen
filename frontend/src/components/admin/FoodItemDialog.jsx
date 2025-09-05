@@ -131,7 +131,6 @@ const FoodItemDialog = ({
         file,
         folder,
         publicId: item?.id || `item_${Date.now()}`,
-        transformation: "c_fill,w_400,h_400,q_auto,f_auto",
       });
 
       URL.revokeObjectURL(previewUrl);
