@@ -71,16 +71,26 @@ export const useCloudinaryStore = create((set, get) => ({
         throw new Error("Only JPEG, PNG, and WebP images are allowed");
       }
 
+      const cloudName = import.meta.env.VITE_CLOUDINARY_NAME;
+      const uploadPreset = import.meta.env.VITE_CLOUDINARY_PRESET;
+
+      if (!cloudName && !uploadPreset) {
+        throw new Error("Cloudinary configuration missing: VITE_CLOUDINARY_NAME and VITE_CLOUDINARY_PRESET");
+      }
+      if (!cloudName) {
+        throw new Error("Cloudinary configuration missing: VITE_CLOUDINARY_NAME");
+      }
+      if (!uploadPreset) {
+        throw new Error("Cloudinary configuration missing: VITE_CLOUDINARY_PRESET");
+      }
+
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_PRESET);
+      formData.append("upload_preset", uploadPreset);
       
       if (folder) formData.append("folder", folder);
       if (publicId) formData.append("public_id", publicId);
       if (transformation) formData.append("transformation", transformation);
-
-      const cloudName = import.meta.env.VITE_CLOUDINARY_NAME;
-      if (!cloudName) throw new Error("Cloudinary configuration missing");
 
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
