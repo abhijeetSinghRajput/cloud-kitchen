@@ -44,7 +44,7 @@ const plans = [
 const SubscriptionPage = () => {
   const [open, setOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
-  const whatsappNumber = "918051389430";
+  const whatsappNumber = "919520442470";
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Hy`;
 
   return (
