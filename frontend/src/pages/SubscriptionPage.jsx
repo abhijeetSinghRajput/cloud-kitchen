@@ -44,8 +44,15 @@ const plans = [
 const SubscriptionPage = () => {
   const [open, setOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
-  const whatsappNumber = "919520442470";
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Hy`;
+  const countryCode = 91;
+  const whatsappNumber = "9520442470"; // your main number (without +91)
+  const fullNumber = `${countryCode}${whatsappNumber}`;
+
+const msg = encodeURIComponent(
+  "Hi 👋 I’m interested in your food plans and tiffin service. Please share the details."
+);
+
+const whatsappUrl = `https://wa.me/${fullNumber}?text=${msg}`;
 
   return (
     <div className="p-4 max-w-screen-2xl mx-auto h-svh">
