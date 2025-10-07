@@ -12,6 +12,22 @@ It allows users to browse menus, add items to their cart, and place orders. The 
 
 ---
 
+## Project Screenshots
+
+## Homepage
+![Homepage](frontend/public/screenshots/homepage.png)
+
+## Admin Dashboard
+![Dashboard](frontend/public/screenshots/admin-dashboard.png)
+
+## Cart
+![Cart](frontend/public/screenshots/cart.png)
+
+## Table QR Generator
+![Table QR Generator](frontend/public/screenshots/table-qr-generator.png)
+
+---
+
 ## Features
 
 ### User
