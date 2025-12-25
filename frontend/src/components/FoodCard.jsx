@@ -15,8 +15,8 @@ const FoodCard = ({ food, categoryName, className, imageClassName }) => {
   const itemQuantity = cartItem ? cartItem.quantity : 0;
 
   return (
-    <Card className={cn("flex gap-2 overflow-hidden food-card", className)}>
-      <div className={cn("w-40", imageClassName)}>
+    <Card className={cn("flex gap-2 overflow-hidden food-card shadow-none border-none", className)}>
+      <div className={cn("h-[50svh]", imageClassName)}>
         <ImageWithSkeleton
           src={food.image}
           alt={food.name}

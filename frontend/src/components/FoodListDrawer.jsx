@@ -19,7 +19,12 @@ const FoodListDrawer = ({ open, onOpenChange, categoryName, items }) => {
             <div className="space-y-3">
               {items.length > 0 ? (
                 items.map((item, idx) => (
-                  <FoodCard key={idx} food={item} categoryName={categoryName} />
+                  <FoodCard
+                    key={idx}
+                    food={item}
+                    categoryName={categoryName}
+                    imageClassName="h-24 aspect-video"
+                  />
                 ))
               ) : (
                 <div className="h-full mt-8 flex flex-col gap-2 items-center text-center">
