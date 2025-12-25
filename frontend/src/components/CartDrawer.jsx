@@ -52,12 +52,6 @@ const CartDrawer = ({ open, onOpenChange }) => {
     }
   };
 
-  const handleClearCart = () => {
-    if (window.confirm("Are you sure you want to clear your cart?")) {
-      clearCart();
-    }
-  };
-
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="h-[90vh] rounded-t-[20px] border-t-4 border-orange-500">
