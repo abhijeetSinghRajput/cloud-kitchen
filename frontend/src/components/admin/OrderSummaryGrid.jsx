@@ -7,20 +7,20 @@ import ImageWithSkeleton from "../ImageWithSkeleton";
 
 const OrderSummaryGrid = ({ orders, className }) => {
   if (orders.length === 0) {
-    return <EmptySummary/>
+    return <EmptySummary />;
   }
 
   const itemMap = {};
 
   orders.forEach((order) => {
     order.items.forEach((item) => {
-      if (!itemMap[item.itemId]) {
-        itemMap[item.itemId] = {
+      if (!itemMap[item.id]) {
+        itemMap[item.id] = {
           ...item,
           totalQuantity: item.quantity,
         };
       } else {
-        itemMap[item.itemId].totalQuantity += item.quantity;
+        itemMap[item.id].totalQuantity += item.quantity;
       }
     });
   });

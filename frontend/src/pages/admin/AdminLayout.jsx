@@ -6,6 +6,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { Button } from "@/components/ui/button";
 import { Loader, Loader2 } from "lucide-react";
 import ShinyText from "@/components/ui/ShinyText/ShinyText";
+import GoogleIcon from "@/components/icons/GoogleIcon";
 
 const AdminLayout = () => {
   const { authUser, login, checkAuth, loading, error } = useAuthStore();
@@ -46,14 +47,14 @@ const AdminLayout = () => {
           {/* Login Button */}
           <Button
             size="lg"
-            className="rounded-lg hover:bg-primary/80"
+            className="rounded-xl hover:bg-primary/80 h-12"
             onClick={login}
             disabled={loading.login}
           >
             {loading.login ? (
               <Loader2 className="animate-spin" />
             ) : (
-              <img src="./google.svg" width={30}/>
+              <GoogleIcon/>
             )}
             Login with Google
           </Button>
