@@ -20,6 +20,7 @@ const CartDrawer = ({ open, onOpenChange }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { cart, getTotalItems, getTotalPrice, clearCart } = useCartStore();
+  
   const { placeOrder } = useOrderStore();
   const isEmpty = Object.keys(cart).length === 0;
   const totalItems = getTotalItems();

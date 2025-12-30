@@ -12,6 +12,7 @@ import {
 import { useInventoryStore } from "@/stores/useInventoryStore";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import FoodCard from "./FoodCard";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 const SearchCommand = ({ open, setOpen }) => {
   const { categories } = useInventoryStore();
@@ -22,32 +23,29 @@ const SearchCommand = ({ open, setOpen }) => {
 
   const filteredCategories = useMemo(() => {
     const term = search.trim().toLowerCase();
-    return categories
-      .map((cat) => {
-        const filteredItems = term
-          ? (cat.items || []).filter(
-              (item) =>
-                item.tags?.some((tag) => tag.toLowerCase().includes(term)) ||
-                item.name?.toLowerCase().includes(term)
-            )
-          : cat.items || [];
-        return { ...cat, items: filteredItems };
-      })
-      .filter((cat) => cat.items?.length > 0);
+    return categories.filter((cat) => cat.items?.length > 0);
   }, [categories, search]);
 
   const handleSelect = (item, categoryName) => {
     setSelectedItem(item);
     setSelectedCategoryName(categoryName);
-    setOpen(false);      // close CommandDialog
+    setOpen(false); // close CommandDialog
     setDialogOpen(true); // open Dialog with FoodCard
   };
 
   return (
     <>
-      <CommandDialog open={open} onOpenChange={setOpen} className="top-0 translate-y-0">
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        className="top-0 translate-y-0"
+      >
         <Command className="rounded-lg border shadow-md md:min-w-[450px]">
-          <CommandInput placeholder="Search by tags..." value={search} onValueChange={setSearch} />
+          <CommandInput
+            placeholder="Search by tags..."
+            value={search}
+            onValueChange={setSearch}
+          />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
 
@@ -57,15 +55,22 @@ const SearchCommand = ({ open, setOpen }) => {
                   {category.items?.map((item) => (
                     <CommandItem
                       key={item.id}
+                      value={item.name + item.tags.join(" ") + item.id}
                       className="cursor-pointer flex gap-2 items-center"
                       onSelect={() => handleSelect(item, category.name)} // <- pass category name
                     >
                       <div className="size-12 rounded-full overflow-hidden flex-shrink-0">
-                        <img src={item.image} className="h-full w-full object-cover" alt={item.name} />
+                        <img
+                          src={item.image}
+                          className="h-full w-full object-cover"
+                          alt={item.name}
+                        />
                       </div>
                       <div>
                         <h4 className="font-medium">{item.name}</h4>
-                        <p className="text-muted-foreground line-clamp-1">{item.description}</p>
+                        <p className="text-muted-foreground line-clamp-1">
+                          {item.description}
+                        </p>
                       </div>
                     </CommandItem>
                   ))}
@@ -79,10 +84,11 @@ const SearchCommand = ({ open, setOpen }) => {
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
+          <DialogTitle className="sr-only">{selectedItem?.name}</DialogTitle>
           {selectedItem && (
             <FoodCard
               food={selectedItem}
-              categoryName={selectedCategoryName} 
+              categoryName={selectedCategoryName}
               className="flex-col"
               imageClassName="w-full"
             />

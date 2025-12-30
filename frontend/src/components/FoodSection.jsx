@@ -8,7 +8,7 @@ const FoodSection = ({ categoryName, items }) => {
       <h3 className="font-bold capitalize mb-4 text-muted-foreground text-xl">
         {categoryName}
       </h3>
-      <ScrollArea className="flex-1 pr-2 pb-4">
+      <ScrollArea className="flex-1 pb-4">
         <div className="space-y-0 flex gap-4 sm:gap-8">
           {items.map((item, idx) => (
             <FoodCard
