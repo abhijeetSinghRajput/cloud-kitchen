@@ -9,14 +9,14 @@ const FoodSection = ({ categoryName, items }) => {
         {categoryName}
       </h3>
       <ScrollArea className="flex-1 pr-2 pb-4">
-        <div className="space-y-0 flex gap-8">
+        <div className="space-y-0 flex gap-4 sm:gap-8">
           {items.map((item, idx) => (
             <FoodCard
               key={idx}
               food={item}
               categoryName={categoryName}
-              className="flex-col w-64"
-              imageClassName="w-full h-52"
+              className="flex-col w-52 sm:w-64"
+              imageClassName="w-full h-44 sm:h-52"
             />
           ))}
         </div>
