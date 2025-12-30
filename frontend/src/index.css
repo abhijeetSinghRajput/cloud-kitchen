@@ -208,14 +208,7 @@
 }
 
 @media screen and (max-width: 440px){
-  .food-card{
-    @apply flex-col;
-  }
-
   .logo{
     @apply hidden;
-  }
-  .food-card > div:first-child{
-    @apply w-full
   }
 }
