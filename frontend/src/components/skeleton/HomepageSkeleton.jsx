@@ -4,12 +4,14 @@ import { Separator } from "../ui/separator";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import FoodCardSkeleton from "./FoodCardSkeleton";
 import { Skeleton } from "../ui/skeleton";
+import GoogleReviewsSkeleton from "./GoogleReviewsSkeleton";
 
 const HomepageSkeleton = () => {
   return (
     <div className="max-w-screen-xl mx-auto p-2 sm:p-4">
+      <GoogleReviewsSkeleton />
+      <Separator className="my-8" />
       <h3 className="text-xl font-semibold mb-4">Categories</h3>
-
       <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-2">
         <FoodCategorySkeleton />
       </div>
@@ -26,7 +28,7 @@ const HomepageSkeleton = () => {
 const FoodSectionSkeleton = () => {
   return (
     <div>
-      <Skeleton className="mb-4 h-7 w-32"/>
+      <Skeleton className="mb-4 h-7 w-32" />
       <ScrollArea className="flex-1 pb-4">
         <div className="space-y-0 flex gap-4 sm:gap-8">
           {[...Array(10)].map((_, idx) => (

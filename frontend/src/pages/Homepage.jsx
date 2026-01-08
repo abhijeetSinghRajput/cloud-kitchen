@@ -2,6 +2,7 @@ import CartFooter from "@/components/CartFooter";
 import FoodCategory from "@/components/food category/FoodCategory";
 import FoodListDrawer from "@/components/FoodListDrawer";
 import FoodSection from "@/components/FoodSection";
+import GoogleReviews from "@/components/GoogleReviews";
 import Navbar from "@/components/Navbar";
 import HomepageSkeleton from "@/components/skeleton/HomepageSkeleton";
 import { Separator } from "@/components/ui/separator";
@@ -24,10 +25,12 @@ const Homepage = () => {
   return (
     <>
       <Navbar />
-      {loading.fetchCategoriesWithItems ? (
+      {loading.fetchCategoriesWithItems  || 0 ? (
         <HomepageSkeleton />
       ) : (
         <div className="max-w-screen-xl mx-auto p-2 sm:p-4">
+          <GoogleReviews/>
+          <Separator className="my-8" />
           <FoodCategory />
           <Separator className="my-8" />
           <div className="space-y-12 mt-8">
