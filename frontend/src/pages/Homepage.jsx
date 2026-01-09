@@ -25,24 +25,27 @@ const Homepage = () => {
   return (
     <>
       <Navbar />
-      {loading.fetchCategoriesWithItems  || 0 ? (
-        <HomepageSkeleton />
-      ) : (
-        <div className="max-w-screen-xl mx-auto p-2 sm:p-4">
-          <GoogleReviews/>
-          <Separator className="my-8" />
-          <FoodCategory />
-          <Separator className="my-8" />
-          <div className="space-y-12 mt-8">
-            {availableCategories.map((category) => (
-              <FoodSection
-                categoryName={category?.name}
-                items={items[category?.id] || []}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+      <div className="max-w-screen-xl mx-auto p-2 sm:p-4">
+        <GoogleReviews />
+        <Separator className="my-8" />
+        {loading.fetchCategoriesWithItems ? (
+          <HomepageSkeleton />
+        ) : (
+          <>
+            <FoodCategory />
+            <Separator className="my-8" />
+            <div className="space-y-12 mt-8">
+              {availableCategories.map((category) => (
+                <FoodSection
+                  key={category?.id} // ✅ add key for list rendering
+                  categoryName={category?.name}
+                  items={items[category?.id] || []}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
       <CartFooter />
     </>
   );
