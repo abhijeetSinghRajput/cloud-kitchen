@@ -10,6 +10,14 @@ import { Button } from "./ui/button";
 import { googleReviews } from "@/constants/review";
 
 const GoogleReviews = () => {
+  const avgRating =
+  (
+    googleReviews.reduce(
+      (sum, r) => sum + r.review.ratings.score,
+      0
+    ) / googleReviews.length
+  ).toFixed(1);
+
   return (
     <div>
       <div className="mb-4 flex justify-between items-center">
@@ -17,7 +25,7 @@ const GoogleReviews = () => {
           <div className="flex gap-4 items-center text-xl font-semibold">
             <h3 className="text-xl font-semibold">Google Reviews</h3>
             <div className="flex items-center gap-1">
-              {4.3}{" "}
+              {avgRating}{" "}
               <Star className="inline-block stroke-amber-400 fill-amber-400 size-5 mr-1" />
             </div>
           </div>
