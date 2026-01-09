@@ -93,7 +93,7 @@ const ReviewCard = ({ data }) => {
           </div>
         </a>
         <div className="text-sm flex gap-1 items-center">
-          <Badge className={"gap-1 px-1.5 bg-sky-600"}>
+          <Badge className={"gap-1 px-1.5 bg-blue-500"}>
             {data.review.ratings.score}{" "}
             <Star className="fill-primary-foreground size-3" />
           </Badge>
