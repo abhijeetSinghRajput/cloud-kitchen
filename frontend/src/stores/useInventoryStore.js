@@ -89,7 +89,6 @@ export const useInventoryStore = create((set, get) => ({
 
       const categoryDoc = categorySnapshot.docs[0];
       const categoryData = { id: categoryDoc.id, ...categoryDoc.data() };
-
       // 2. Get items for that category
       const itemsQuery = query(
         collection(db, "items"),
@@ -152,6 +151,9 @@ export const useInventoryStore = create((set, get) => ({
         })
       );
 
+      const categoryCount = categoriesWithItems.filter(c => c.isAvailable);
+      localStorage.setItem("categoryCount", categoryCount.length || 0);
+      
       // 3. Update Zustand state
       set({
         categories: categoriesWithItems,

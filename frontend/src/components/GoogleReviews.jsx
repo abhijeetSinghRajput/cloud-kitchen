@@ -14,8 +14,8 @@ const GoogleReviews = () => {
     <div>
       <div className="mb-4 flex justify-between items-center">
         <div>
-          <div className="flex gap-4 items-center text-xl font-semibold">
-            <h3 className="text-xl font-semibold">Google Reviews</h3>
+          <div className="flex gap-4 items-center text-xl font-bold">
+            <h3 className="text-xl">Google Reviews</h3>
             <div className="flex items-center gap-1">
               {4.3}{" "}
               <Star className="inline-block stroke-amber-400 fill-amber-400 size-5 mr-1" />
@@ -66,7 +66,7 @@ const GoogleReviews = () => {
 
 const ReviewCard = ({ data }) => {
   return (
-    <Card className="w-[350px] flex flex-col gap-2 p-4 rounded-2xl bg-muted/50">
+    <Card className="w-[300px] sm:w-[350px] flex flex-col gap-2 p-4 rounded-2xl bg-muted/50">
       <CardHeader className="p-0 flex justify-between items-start flex-row">
         <a
           href={data.author.contrib}
@@ -76,7 +76,7 @@ const ReviewCard = ({ data }) => {
           <Avatar className="size-9">
             <AvatarImage
               src={data.author.avatar}
-              referrerpolicy="no-referrer"
+              referrerPolicy="no-referrer"
               alt={data.author.name}
             />
             <AvatarFallback>{data.author.name.charAt(0)}</AvatarFallback>
@@ -104,10 +104,10 @@ const ReviewCard = ({ data }) => {
         </div>
       </CardHeader>
       <CardContent className="flex flex-1 p-0 space-y-1">
-        <p className="line-clamp-2">{data.review.text}</p>
+        <p className="line-clamp-2 text-sm sm:text-base">{data.review.text}</p>
       </CardContent>
       <CardFooter className="p-0 flex-col justify-start">
-        <div className="text-muted-foreground w-full font-medium text-sm flex gap-4 p-2 px-4 rounded-lg bg-muted">
+        <div className="text-muted-foreground w-full justify-between font-medium text-xs sm:text-sm flex gap-4 py-1 px-2 sm:py-2 sm:px-4 rounded-lg bg-muted">
           <span>Food: {data.review.ratings.food}/5</span>
           <span>Service: {data.review.ratings.service}/5</span>
           <span>Atmosphere: {data.review.ratings.atmosphere}/5</span>

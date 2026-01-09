@@ -1,7 +1,9 @@
 import React from "react";
 import { Skeleton } from "@/components/ui/skeleton"; // adjust import path if needed
 
-const FoodCategorySkeleton = ({size = 10}) => {
+const FoodCategorySkeleton = () => {
+  const size = Number(localStorage.getItem("categoryCount")) || 8;
+
   return (
     <>
       {[...Array(size)].map((_, i) => (
