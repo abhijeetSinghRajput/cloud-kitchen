@@ -12,15 +12,17 @@ import { Input } from "./ui/input";
 import { useOrderStore } from "@/stores/useOrderStore";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
+import { cn } from "@/lib/utils";
 
 const CartDrawer = ({ open, onOpenChange }) => {
   const [searchParams] = useSearchParams();
   const tableNo = searchParams.get("table");
   const [tableInput, setTableInput] = useState(tableNo || "");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { cart, getTotalItems, getTotalPrice, clearCart } = useCartStore();
-  
+
   const { placeOrder } = useOrderStore();
   const isEmpty = Object.keys(cart).length === 0;
   const totalItems = getTotalItems();
@@ -28,7 +30,7 @@ const CartDrawer = ({ open, onOpenChange }) => {
 
   const handleCheckout = async () => {
     if (!tableInput) {
-      alert("Please enter a table number");
+      setErrorMessage("Please enter a valid table number");
       return;
     }
 
@@ -53,9 +55,14 @@ const CartDrawer = ({ open, onOpenChange }) => {
     }
   };
 
+  const handleInputChange = (e) => {
+    setTableInput(e.target.value);
+    if (errorMessage) setErrorMessage("");
+  }
+
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="h-[90vh] rounded-t-[20px] border-t-4 border-orange-500">
+      <DrawerContent className="h-[80vh] rounded-t-[20px] border-t-4 border-orange-500">
         <div className="flex flex-col h-full max-w-screen-md w-full mx-auto">
           {/* Header - Fixed */}
           <div className="flex-shrink-0 px-4 sm:px-6 pt-4 pb-3 border-b bg-white sticky top-0 z-10">
@@ -79,9 +86,9 @@ const CartDrawer = ({ open, onOpenChange }) => {
                   <Input
                     type="number"
                     placeholder="Enter table no."
-                    className="h-10 border-orange-200 focus-visible:ring-orange-500"
+                    className={cn("h-10", errorMessage && "placeholder:text-destructive ring-2 ring-destructive bg-destructive/10")}
                     value={tableInput}
-                    onChange={(e) => setTableInput(e.target.value)}
+                    onChange={handleInputChange}
                     min="1"
                   />
                 </div>
@@ -179,7 +186,7 @@ const CartDrawer = ({ open, onOpenChange }) => {
 
                 <Button
                   onClick={handleCheckout}
-                  disabled={!tableInput || isLoading}
+                  disabled={isLoading}
                   className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg shadow-orange-500/30 h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg font-semibold"
                   size="lg"
                 >

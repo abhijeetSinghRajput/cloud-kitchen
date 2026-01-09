@@ -11,7 +11,7 @@ const FoodCard = ({ food, categoryName, className, imageClassName }) => {
 
   // Find the current item in cart
   const cartItems = cart[categoryName] || [];
-  const cartItem = cartItems.find((item) => item.name === food.name);
+  const cartItem = cartItems.find((item) => item.id === food.id);
   const itemQuantity = cartItem ? cartItem.quantity : 0;
 
   return (
@@ -43,7 +43,7 @@ const FoodCard = ({ food, categoryName, className, imageClassName }) => {
               </span>
               <Button
                 className="h-full rounded-none bg-[#ff5200] hover:bg-transparent shadow-none"
-                onClick={() => removeFromCart(categoryName, food.name)}
+                onClick={() => removeFromCart(categoryName, food)}
                 disabled={itemQuantity === 0}
               >
                 <Minus />

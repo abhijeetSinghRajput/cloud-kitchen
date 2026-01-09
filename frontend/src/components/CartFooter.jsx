@@ -4,8 +4,7 @@ import { IndianRupee } from "lucide-react";
 import { useCartStore } from "@/stores/useCartStore";
 
 const CartFooter = () => {
-  const { cart, getTotalItems, getTotalPrice, clearCart,setOpenCart } =
-    useCartStore();
+  const { cart, getTotalItems, getTotalPrice, setOpenCart } = useCartStore();
 
   const isEmpty = Object.keys(cart).length === 0;
   const totalItems = getTotalItems();
@@ -13,8 +12,8 @@ const CartFooter = () => {
 
   if (isEmpty) return null;
   return (
-    <footer className="sticky z-[99999] border-t bottom-0 bg-black p-4 shadow-md left-0">
-      <div className="flex items-center justify-between gap-4">
+    <footer className="sticky z-10 border-t bottom-0 bg-muted shadow-md left-0">
+      <div className="flex items-center justify-between gap-4 max-w-screen-xl p-4 mx-auto">
         <div className="space-y-0.5">
           {!isEmpty && (
             <p className="text-xs sm:text-sm text-muted-foreground font-semibold">

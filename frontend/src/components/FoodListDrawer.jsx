@@ -4,6 +4,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import { useCartStore } from "@/stores/useCartStore";
 import FoodCard from "./FoodCard";
 import { PackageOpen, Utensils } from "lucide-react";
+import CartFooter from "./CartFooter";
 
 const FoodListDrawer = ({ open, onOpenChange, categoryName, items }) => {
   return (
@@ -47,6 +48,7 @@ const FoodListDrawer = ({ open, onOpenChange, categoryName, items }) => {
               )}
             </div>
           </ScrollArea>
+          <CartFooter />
         </div>
       </DrawerContent>
     </Drawer>

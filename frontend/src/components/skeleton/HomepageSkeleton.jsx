@@ -8,7 +8,7 @@ import GoogleReviewsSkeleton from "./GoogleReviewsSkeleton";
 
 const HomepageSkeleton = () => {
   return (
-    <div className="max-w-screen-xl mx-auto p-2 sm:p-4">
+    <div className="max-w-screen-xl mx-auto p-4">
       {/* <GoogleReviewsSkeleton />
       <Separator className="my-8" /> */}
       <h3 className="text-xl font-semibold mb-4">Categories</h3>
@@ -25,7 +25,7 @@ const HomepageSkeleton = () => {
   );
 };
 
-const FoodSectionSkeleton = () => {
+export const FoodSectionSkeleton = () => {
   return (
     <div>
       <Skeleton className="mb-4 h-7 w-32" />

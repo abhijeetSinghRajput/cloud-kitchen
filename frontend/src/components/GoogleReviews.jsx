@@ -28,14 +28,18 @@ const GoogleReviews = () => {
           </div>
         </div>
         <div>
-          <Button asChild size="lg" className="hidden sm:flex w-full rounded-full">
-        <a
-          target="_blank"
-          href="https://www.google.com/search?sca_esv=727911a362dc4a92&sxsrf=ANbL-n6wVceqaR9sta48l9KVZwcZBQY-Ng:1767909932802&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOdiS5Xqk_Gh92bMEiWeKcxuJuMgndWfOHSzNiv6ng-VW2TSk2oFlluEmsK1bVKaRH-qPF-wRQeOfaahZOYz3lsl_QKt3IsPmVoTdXiPvwh6FjXsTqw%3D%3D&q=247+cloud+kitchen+Reviews&sa=X&ved=2ahUKEwjUnKjc-fyRAxWGXGwGHcZENigQ0bkNegQIMRAE&biw=1536&bih=742&dpr=1.25&aic=0#lrd=0x39092b0002b18479:0xe41b874d78d567ce,3,,,,"
-        >
-          Rate us
-        </a>
-      </Button>
+          <Button
+            asChild
+            size="lg"
+            className="hidden sm:flex w-full rounded-full"
+          >
+            <a
+              target="_blank"
+              href="https://www.google.com/search?sca_esv=727911a362dc4a92&sxsrf=ANbL-n6wVceqaR9sta48l9KVZwcZBQY-Ng:1767909932802&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOdiS5Xqk_Gh92bMEiWeKcxuJuMgndWfOHSzNiv6ng-VW2TSk2oFlluEmsK1bVKaRH-qPF-wRQeOfaahZOYz3lsl_QKt3IsPmVoTdXiPvwh6FjXsTqw%3D%3D&q=247+cloud+kitchen+Reviews&sa=X&ved=2ahUKEwjUnKjc-fyRAxWGXGwGHcZENigQ0bkNegQIMRAE&biw=1536&bih=742&dpr=1.25&aic=0#lrd=0x39092b0002b18479:0xe41b874d78d567ce,3,,,,"
+            >
+              Rate us
+            </a>
+          </Button>
         </div>
       </div>
 

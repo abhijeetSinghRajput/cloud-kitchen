@@ -4,7 +4,9 @@ import FoodListDrawer from "@/components/FoodListDrawer";
 import FoodSection from "@/components/FoodSection";
 import GoogleReviews from "@/components/GoogleReviews";
 import Navbar from "@/components/Navbar";
-import HomepageSkeleton from "@/components/skeleton/HomepageSkeleton";
+import HomepageSkeleton, {
+  FoodSectionSkeleton,
+} from "@/components/skeleton/HomepageSkeleton";
 import { Separator } from "@/components/ui/separator";
 import { useCartStore } from "@/stores/useCartStore";
 import { useInventoryStore } from "@/stores/useInventoryStore";
@@ -26,24 +28,27 @@ const Homepage = () => {
     <>
       <Navbar />
       <div className="max-w-screen-xl mx-auto p-4">
+        <FoodCategory />
+        <Separator className="my-8" />
+
         <GoogleReviews />
         <Separator className="my-8" />
         {loading.fetchCategoriesWithItems ? (
-          <HomepageSkeleton />
+          <div className="space-y-12 mt-8">
+            {[...Array(10)].map((_, idx) => (
+              <FoodSectionSkeleton key={idx} />
+            ))}
+          </div>
         ) : (
-          <>
-            <FoodCategory />
-            <Separator className="my-8" />
-            <div className="space-y-12 mt-8">
-              {availableCategories.map((category) => (
-                <FoodSection
-                  key={category?.id} // ✅ add key for list rendering
-                  categoryName={category?.name}
-                  items={items[category?.id] || []}
-                />
-              ))}
-            </div>
-          </>
+          <div className="space-y-12 mt-8">
+            {availableCategories.map((category) => (
+              <FoodSection
+                key={category?.id} // ✅ add key for list rendering
+                categoryName={category?.name}
+                items={items[category?.id] || []}
+              />
+            ))}
+          </div>
         )}
       </div>
       <CartFooter />

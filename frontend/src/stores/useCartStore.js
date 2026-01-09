@@ -29,7 +29,7 @@ export const useCartStore = create((set, get) => ({
       }
 
       const existingItemIndex = newCart[category].findIndex(
-        (cartItem) => cartItem.name === item.name
+        (cartItem) => cartItem.id === item.id
       );
 
       if (existingItemIndex >= 0) {
@@ -47,14 +47,14 @@ export const useCartStore = create((set, get) => ({
   },
 
   // Remove one quantity
-  removeFromCart: (category, itemName) => {
+  removeFromCart: (category, item) => {
     set((state) => {
       const newCart = { ...state.cart };
 
       if (!newCart[category]) return { cart: newCart };
 
       const existingItemIndex = newCart[category].findIndex(
-        (cartItem) => cartItem.name === itemName
+        (cartItem) => cartItem.id === item.id
       );
 
       if (existingItemIndex >= 0) {
@@ -73,14 +73,14 @@ export const useCartStore = create((set, get) => ({
   },
 
   // Remove entire item
-  removeCompletely: (category, itemName) => {
+  removeCompletely: (category, item) => {
     set((state) => {
       const newCart = { ...state.cart };
 
       if (!newCart[category]) return { cart: newCart };
 
       newCart[category] = newCart[category].filter(
-        (cartItem) => cartItem.name !== itemName
+        (cartItem) => cartItem.id !== item.id
       );
 
       if (newCart[category].length === 0) {

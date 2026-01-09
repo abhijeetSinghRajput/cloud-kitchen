@@ -9,7 +9,7 @@ const FoodSection = ({ categoryName, items }) => {
         {categoryName}
       </h3>
       <ScrollArea className="flex-1 pb-4">
-        <div className="space-y-0 flex gap-4 sm:gap-8">
+        <div className="space-y-0 flex gap-2 sm:gap-4" >
           {items.map((item, idx) => (
             <FoodCard
               key={idx}
