@@ -3,6 +3,8 @@ import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import FoodCard from "./FoodCard";
 
 const FoodSection = ({ categoryName, items }) => {
+  if(items.length === 0) return null;
+
   return (
     <div>
       <h3 className="font-bold capitalize mb-4 text-muted-foreground text-xl">
