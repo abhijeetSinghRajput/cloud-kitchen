@@ -27,7 +27,7 @@ const Homepage = () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-screen-xl mx-auto p-4">
+      <main className="max-w-screen-xl mx-auto p-4">
         <FoodCategory />
         <Separator className="my-8" />
 
@@ -50,7 +50,7 @@ const Homepage = () => {
             ))}
           </div>
         )}
-      </div>
+      </main>
       <CartFooter />
     </>
   );
