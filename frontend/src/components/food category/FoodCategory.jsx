@@ -25,7 +25,7 @@ const FoodCategory = () => {
 
   return (
     <div>
-      <h3 className="text-xl font-bold mb-4">Categories</h3>
+      <h2 className="text-xl font-bold mb-4">Categories</h2>
       <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-2">
         {loading.fetchCategoriesWithItems ? (
           <FoodCategorySkeleton />

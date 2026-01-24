@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://cloudkitchen247.netlify.app/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://cloudkitchen247.netlify.app/subscription</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Admin routes (intentionally low priority / optional) -->
+  <url>
+    <loc>https://cloudkitchen247.netlify.app/admin</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.1</priority>
+  </url>
+
+  <url>
+    <loc>https://cloudkitchen247.netlify.app/admin/dashboard</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.1</priority>
+  </url>
+
+  <url>
+    <loc>https://cloudkitchen247.netlify.app/admin/category</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.1</priority>
+  </url>
+
+  <url>
+    <loc>https://cloudkitchen247.netlify.app/admin/create-qr</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.1</priority>
+  </url>
+
+  <url>
+    <loc>https://cloudkitchen247.netlify.app/admin/subscribers</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.1</priority>
+  </url>
+
+</urlset>

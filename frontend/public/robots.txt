@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /admin/dashboard
+Disallow: /admin/category
+Disallow: /admin/create-qr
+Disallow: /admin/subscribers
+
+Sitemap: https://cloudkitchen247.com/sitemap.xml

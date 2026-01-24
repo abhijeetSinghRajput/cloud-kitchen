@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import GoogleIcon from "./icons/GoogleIcon";
 import { Button } from "./ui/button";
 import { googleReviews } from "@/constants/review";
+import WhatsappButton from "./WhatsappButton";
 
 const GoogleReviews = () => {
   const avgRating =
@@ -23,19 +24,19 @@ const GoogleReviews = () => {
       <div className="mb-4 flex justify-between items-center">
         <div>
           <div className="flex gap-4 items-center text-xl font-bold">
-            <h3 className="text-xl">Google Reviews</h3>
+            <h2 className="text-xl">Google Reviews</h2>
             <div className="flex items-center gap-1">
-              {avgRating}{" "}
+              4.9
               <Star className="inline-block stroke-amber-400 fill-amber-400 size-5 mr-1" />
             </div>
           </div>
           <div>
             <p className="text-sm">
-              Based on {googleReviews.length} verified customers
+              Based on 200+ verified customers
             </p>
           </div>
         </div>
-        <div>
+        <div className="flex gap-4">
           <Button
             asChild
             size="lg"
@@ -115,7 +116,7 @@ const ReviewCard = ({ data }) => {
         <p className="line-clamp-2 text-sm sm:text-base">{data.review.text}</p>
       </CardContent>
       <CardFooter className="p-0 flex-col justify-start">
-        <div className="text-muted-foreground w-full justify-between font-medium text-xs sm:text-sm flex gap-4 py-1 px-2 sm:py-2 sm:px-4 rounded-lg bg-muted">
+        <div className="text-muted-foreground w-full justify-between font-medium text-xs sm:text-sm flex gap-4">
           <span>Food: {data.review.ratings.food}/5</span>
           <span>Service: {data.review.ratings.service}/5</span>
           <span>Atmosphere: {data.review.ratings.atmosphere}/5</span>

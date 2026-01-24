@@ -40,12 +40,14 @@ const Navbar = ({ authUser = null }) => {
             size="icon"
             tooltip="search"
             onClick={() => setSearchOpen(true)}
+            aria-label="Search"
           >
             <Search />
           </Button>
           <Button
             size="icon"
             tooltip="cart"
+            aria-label="Open cart"
             className="relative"
             onClick={() => setOpenCart(true)}
           >

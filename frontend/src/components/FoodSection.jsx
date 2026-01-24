@@ -3,11 +3,13 @@ import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import FoodCard from "./FoodCard";
 
 const FoodSection = ({ categoryName, items }) => {
+  if(items.length === 0) return null;
+  
   return (
     <div>
-      <h3 className="font-bold capitalize mb-4 text-muted-foreground text-xl">
+      <h2 className="font-bold capitalize mb-4 text-xl">
         {categoryName}
-      </h3>
+      </h2>
       <ScrollArea className="flex-1 pb-4">
         <div className="space-y-0 flex gap-2 sm:gap-4" >
           {items.map((item, idx) => (

@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
 import React from "react";
 import { CardSwipe } from "@/components/ui/card-swipe";
-import { Link } from "react-router-dom";
 import SubscriptionForm from "@/components/SubscriptionForm";
 import SubscriptionCard from "@/components/SubscriptionCard";
-import { IconBrandWhatsapp } from "@tabler/icons-react";
+import WhatsappButton from "@/components/WhatsappButton";
 
 const plans = [
   {
@@ -44,15 +42,6 @@ const plans = [
 const SubscriptionPage = () => {
   const [open, setOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
-  const countryCode = 91;
-  const whatsappNumber = "9520442470"; // your main number (without +91)
-  const fullNumber = `${countryCode}${whatsappNumber}`;
-
-const msg = encodeURIComponent(
-  "Hi 👋 I’m interested in your food plans and tiffin service. Please share the details."
-);
-
-const whatsappUrl = `https://wa.me/${fullNumber}?text=${msg}`;
 
   return (
     <div className="p-4 max-w-screen-2xl mx-auto h-svh">
@@ -78,17 +67,7 @@ const whatsappUrl = `https://wa.me/${fullNumber}?text=${msg}`;
         ))}
       </CardSwipe>
 
-      <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-        <Button className="landing-button h-12 mx-auto">
-          <div className="size-8 aspect-square">
-            <img
-              src="/whatsapp-logo.svg"
-              className="w-full h-full object-contain"
-            />
-          </div>
-          {whatsappNumber}
-        </Button>
-      </a>
+      <WhatsappButton/>
 
       {/* Popup Form */}
       <SubscriptionForm

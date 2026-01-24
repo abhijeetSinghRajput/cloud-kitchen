@@ -26,8 +26,8 @@ const FoodCard = ({ food, categoryName, className, imageClassName }) => {
 
       <div className="flex flex-col justify-between flex-1 p-2 space-y-2">
         <div>
-          <h4 className="text-base font-bold">{food.name}</h4>
-          <p className="text-muted-foreground text-sm">{food.description}</p>
+          <h3 className="text-base font-bold">{food.name}</h3>
+          <p className="text-muted-foreground text-sm line-clamp-3">{food.description}</p>
         </div>
 
         <div className="flex gap-4 justify-between items-center">
@@ -45,12 +45,14 @@ const FoodCard = ({ food, categoryName, className, imageClassName }) => {
                 className="h-full rounded-none bg-[#ff5200] hover:bg-transparent shadow-none"
                 onClick={() => removeFromCart(categoryName, food)}
                 disabled={itemQuantity === 0}
+                aria-label={`Decrease quantity of ${food.name}`}
               >
                 <Minus />
               </Button>
               <Button
                 className="h-full rounded-none bg-[#ff5200] hover:bg-transparent shadow-none"
                 onClick={() => addToCart(categoryName, food)}
+                aria-label={`Increase quantity of ${food.name}`}
               >
                 <Plus />
               </Button>
