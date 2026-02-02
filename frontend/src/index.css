@@ -28,7 +28,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
   .dark {
     --background: 240 10% 3.9%;
@@ -54,7 +54,7 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
 
@@ -68,7 +68,11 @@
 }
 .landing-button {
   position: relative;
-  background: linear-gradient(135deg, #25d366, rgba(18, 140, 126, 0.7)); /* WhatsApp green */
+  background: linear-gradient(
+    135deg,
+    #25d366,
+    rgba(18, 140, 126, 0.7)
+  ); /* WhatsApp green */
   background-size: 200% 200%;
   font-weight: 600;
   font-size: 1.1rem;
@@ -79,7 +83,8 @@
   cursor: pointer;
   isolation: isolate;
   z-index: 15;
-  box-shadow: 0 0 40px rgba(37, 211, 102, 0.4),
+  box-shadow:
+    0 0 40px rgba(37, 211, 102, 0.4),
     0 0 80px rgba(18, 140, 126, 0.3),
     0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -162,7 +167,8 @@
 }
 
 .landing-button:hover {
-  box-shadow: 0 0 60px rgba(37, 211, 102, 0.2),
+  box-shadow:
+    0 0 60px rgba(37, 211, 102, 0.2),
     0 0 120px rgba(18, 140, 126, 0.2),
     0 0 180px rgba(7, 94, 84, 0.2),
     0 12px 40px rgba(0, 0, 0, 0.4),
@@ -207,8 +213,8 @@
   }
 }
 
-@media screen and (max-width: 440px){
-  .logo{
+@media screen and (max-width: 440px) {
+  .logo {
     @apply hidden;
   }
 }
@@ -218,5 +224,8 @@
 @media screen and (max-width: 385px) {
   .drawer-food-card {
     @apply flex-col;
+  }
+  .drawer-food-card .aspect-video {
+    @apply h-40;
   }
 }
