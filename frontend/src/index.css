@@ -212,3 +212,11 @@
     @apply hidden;
   }
 }
+.drawer-food-card {
+  @apply flex-row;
+}
+@media screen and (max-width: 385px) {
+  .drawer-food-card {
+    @apply flex-col;
+  }
+}

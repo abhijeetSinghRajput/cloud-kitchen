@@ -24,6 +24,7 @@ const FoodListDrawer = ({ open, onOpenChange, categoryName, items }) => {
                     key={idx}
                     food={item}
                     categoryName={categoryName}
+                    className={"drawer-food-card"}
                     imageClassName="h-24 aspect-video"
                   />
                 ))
