@@ -150,7 +150,7 @@ const SearchCommand = ({ open, setOpen }) => {
                         className="cursor-pointer flex gap-2 items-center"
                         onSelect={() => handleSelect(item, item.categoryName)}
                       >
-                        <div className="size-12 rounded-full overflow-hidden flex-shrink-0">
+                        <div className="size-14 rounded-full overflow-hidden flex-shrink-0">
                           <img
                             src={item.image}
                             className="h-full w-full object-cover"
