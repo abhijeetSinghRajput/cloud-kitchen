@@ -186,7 +186,7 @@ const FoodItemPage = () => {
       {/* Items Grid */}
       <div className="min-h-[200px]">
         {loading.fetchItems ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="food-item-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {/* Loading skeletons */}
             {[...Array(10)].map((_, index) => (
               <Card key={index} className="overflow-hidden">
@@ -202,7 +202,7 @@ const FoodItemPage = () => {
             ))}
           </div>
         ) : categoryItems.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="food-item-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {categoryItems.map((item, index) => (
               <FoodCard2
                 key={item.id || index}

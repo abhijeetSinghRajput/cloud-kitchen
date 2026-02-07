@@ -213,6 +213,11 @@
   }
 }
 
+@media screen and (max-width: 480px) {
+  .food-item-grid {
+    @apply grid-cols-1;
+  }
+}
 @media screen and (max-width: 440px) {
   .logo {
     @apply hidden;

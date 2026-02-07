@@ -47,13 +47,13 @@ const FoodItemDialog = ({
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
 
-  const { 
-    uploadImage, 
-    deleteImage, 
+  const {
+    uploadImage,
+    deleteImage,
     deleteImageFallback,
-    loading: cloudLoading, 
+    loading: cloudLoading,
     error: cloudError,
-    clearError: clearCloudError 
+    clearError: clearCloudError,
   } = useCloudinaryStore();
 
   const {
@@ -105,7 +105,11 @@ const FoodItemDialog = ({
       errors.name = "Item name is required";
     }
 
-    if (!formData.price || isNaN(Number(formData.price)) || Number(formData.price) <= 0) {
+    if (
+      !formData.price ||
+      isNaN(Number(formData.price)) ||
+      Number(formData.price) <= 0
+    ) {
       errors.price = "Valid price is required";
     }
 
@@ -123,26 +127,49 @@ const FoodItemDialog = ({
 
     try {
       clearCloudError();
-      
+
+      // ⭐ Step 1: Save reference to old image
+      const oldImageUrl = formData.image;
+
+      // ⭐ Step 2: Show preview immediately
       const previewUrl = URL.createObjectURL(file);
       setFormData((prev) => ({ ...prev, image: previewUrl, file }));
 
+      // ⭐ Step 3: Upload new image
       const result = await uploadImage({
         file,
         folder,
-        publicId: item?.id || `item_${Date.now()}`,
+        // No publicId needed
       });
 
+      // ⭐ Step 4: Clean up preview
       URL.revokeObjectURL(previewUrl);
 
-      setFormData((prev) => ({ 
-        ...prev, 
-        image: result.url, 
-        file: null 
+      // ⭐ Step 5: Update form with new image
+      setFormData((prev) => ({
+        ...prev,
+        image: result.url,
+        file: null,
+        oldImageUrl: oldImageUrl?.includes("cloudinary") ? oldImageUrl : null, // Track old image
       }));
 
+      // ⭐ Step 6: Mark old image as deleted in store (for tracking)
+      if (oldImageUrl && oldImageUrl.includes("cloudinary")) {
+        // Remove from store state
+        const { markImageForDeletion } = useCloudinaryStore.getState();
+        markImageForDeletion(oldImageUrl);
+
+        console.log("Old image marked for cleanup:", oldImageUrl);
+        // Note: Actual deletion requires backend, but we track it here
+      }
     } catch (err) {
       console.error("Image upload failed:", err);
+      // Revert to old image on error
+      setFormData((prev) => ({
+        ...prev,
+        image: prev.oldImageUrl || "",
+        file: null,
+      }));
     }
   };
 
@@ -150,7 +177,7 @@ const FoodItemDialog = ({
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    
+
     if (validationErrors[name]) {
       setValidationErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -205,8 +232,8 @@ const FoodItemDialog = ({
       clearInvError();
       clearCloudError();
 
-      const deleteImageFn = item.image 
-        ? (deleteImage || deleteImageFallback) 
+      const deleteImageFn = item.image
+        ? deleteImage || deleteImageFallback
         : null;
 
       await deleteItem(item, deleteImageFn);
@@ -224,9 +251,11 @@ const FoodItemDialog = ({
     }
   };
 
-  const isLoading = cloudLoading.uploadImage || invLoading.addItem || invLoading.updateItem;
+  const isLoading =
+    cloudLoading.uploadImage || invLoading.addItem || invLoading.updateItem;
   const isDeleteLoading = invLoading.deleteItem || cloudLoading.deleteImage;
-  const hasErrors = cloudError || invError || Object.keys(validationErrors).length > 0;
+  const hasErrors =
+    cloudError || invError || Object.keys(validationErrors).length > 0;
 
   return (
     <>
@@ -244,8 +273,10 @@ const FoodItemDialog = ({
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  {cloudError || invError || validationErrors.general || 
-                   Object.values(validationErrors)[0]}
+                  {cloudError ||
+                    invError ||
+                    validationErrors.general ||
+                    Object.values(validationErrors)[0]}
                 </AlertDescription>
               </Alert>
             )}
@@ -271,10 +302,15 @@ const FoodItemDialog = ({
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter food name"
-                className={cn("h-11", validationErrors.name ? "ring-2 ring-destructive" : "")}
+                className={cn(
+                  "h-11",
+                  validationErrors.name ? "ring-2 ring-destructive" : "",
+                )}
               />
               {validationErrors.name && (
-                <p className="text-sm text-red-500 mt-1">{validationErrors.name}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {validationErrors.name}
+                </p>
               )}
             </div>
 
@@ -287,10 +323,15 @@ const FoodItemDialog = ({
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Write a short description..."
-                className={cn("h-11", validationErrors.description ? "ring-2 ring-destructive" : "")}
+                className={cn(
+                  "h-11",
+                  validationErrors.description ? "ring-2 ring-destructive" : "",
+                )}
               />
               {validationErrors.description && (
-                <p className="text-sm text-red-500 mt-1">{validationErrors.description}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {validationErrors.description}
+                </p>
               )}
             </div>
 
@@ -306,10 +347,15 @@ const FoodItemDialog = ({
                 value={formData.price}
                 onChange={handleChange}
                 placeholder="100"
-                className={cn("h-11", validationErrors.price ? "ring-2 ring-destructive" : "")}
+                className={cn(
+                  "h-11",
+                  validationErrors.price ? "ring-2 ring-destructive" : "",
+                )}
               />
               {validationErrors.price && (
-                <p className="text-sm text-red-500 mt-1">{validationErrors.price}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {validationErrors.price}
+                </p>
               )}
             </div>
 
@@ -366,7 +412,8 @@ const FoodItemDialog = ({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Food Item?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. The item and its image will be permanently deleted.
+              This action cannot be undone. The item and its image will be
+              permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -376,7 +423,9 @@ const FoodItemDialog = ({
               onClick={handleDelete}
               disabled={isDeleteLoading}
             >
-              {isDeleteLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isDeleteLoading && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Confirm Delete
             </AlertDialogAction>
           </AlertDialogFooter>

@@ -72,7 +72,7 @@ const AdminLayout = () => {
   return (
     <div>
       <Navbar />
-      <div className="p-2 sm:p-4 max-w-screen-xl mx-auto">
+      <div className="p-4 max-w-screen-xl mx-auto">
         <Outlet />
       </div>
     </div>
