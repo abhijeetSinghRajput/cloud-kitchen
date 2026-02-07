@@ -6,12 +6,16 @@ import { Badge } from "./ui/badge";
 import { useCartStore } from "@/stores/useCartStore";
 import CartDrawer from "./CartDrawer";
 import { Link } from "react-router-dom";
+import WhatsappButton, { whatsappInfo } from "./WhatsappButton";
 
 const Navbar = ({ authUser = null }) => {
   const [searchOpen, setSearchOpen] = useState(false);
   const { getCartItemQuantity } = useCartStore();
   const quantity = getCartItemQuantity();
-  const {isCartOpen, setOpenCart} = useCartStore();
+  const { isCartOpen, setOpenCart } = useCartStore();
+  const { whatsappNumber, fullNumber, message } = whatsappInfo;
+
+  const whatsappUrl = `https://wa.me/${fullNumber}?text=${message}`;
   return (
     <nav className="sticky z-50 top-0 bg-primary-foreground shadow-md left-0">
       <div className="max-w-screen-xl mx-auto flex justify-between items-center px-4 py-2">
@@ -29,12 +33,21 @@ const Navbar = ({ authUser = null }) => {
             />
           </Link>
         </h1>
-        <div className="flex items-center gap-2">
-          <Link to="/subscription">
+        <div className="flex items-center gap-3">
+          {/* <Link to="/subscription">
             <Button className="rounded-full bg-orange-500 hover:bg-orange-400">
               Get Subscription
             </Button>
-          </Link>
+          </Link> */}
+
+          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+              <div className="size-9 aspect-square">
+                <img
+                  src="/whatsapp-logo.svg"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+          </a>
 
           <Button
             size="icon"

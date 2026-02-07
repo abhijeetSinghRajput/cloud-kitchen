@@ -1,16 +1,18 @@
 import React from "react";
 import { Button } from "./ui/button";
 
-const WhatsappButton = () => {
-  const countryCode = 91;
-  const whatsappNumber = "9520442470"; // your main number (without +91)
-  const fullNumber = `${countryCode}${whatsappNumber}`;
-
-  const msg = encodeURIComponent(
+export const whatsappInfo = {
+  whatsappNumber: "9520442470", // your main number (without +91)
+  fullNumber: `919520442470`,
+  message: encodeURIComponent(
     "Hi 👋 I’m interested in your food plans and tiffin service. Please share the details.",
-  );
+  ),
+};
 
-  const whatsappUrl = `https://wa.me/${fullNumber}?text=${msg}`;
+const WhatsappButton = () => {
+  const { whatsappNumber, fullNumber, message } = whatsappInfo;
+
+  const whatsappUrl = `https://wa.me/${fullNumber}?text=${message}`;
 
   return (
     <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
