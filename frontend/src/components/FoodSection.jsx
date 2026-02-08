@@ -3,8 +3,6 @@ import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import FoodCard from "./FoodCard";
 import { Link as LinkIcon } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "./ui/button";
-import TooltipWrapper from "./TooltipWrapper";
 
 const slugify = (text) => text.toLowerCase().replace(/\s+/g, "-");
 
@@ -19,6 +17,12 @@ const FoodSection = ({ categoryName, items }) => {
     toast.success("Section link copied!");
   };
 
+  // Sort items: available first, unavailable last
+  const sortedItems = [...items].sort((a, b) => {
+    if (a.isAvailable === b.isAvailable) return 0;
+    return a.isAvailable ? -1 : 1; // available first
+  });
+
   return (
     <section id={sectionId}>
       <div className="relative group mb-4">
@@ -28,10 +32,8 @@ const FoodSection = ({ categoryName, items }) => {
         >
           {categoryName}
 
-          {/* Hover link icon */}
           <span className="opacity-0 group-hover:opacity-100 transition text-muted-foreground">
             <LinkIcon size={18} />
-            {/* Simple tooltip text */}
             <span className="absolute -top-8 left-4 whitespace-nowrap px-2 py-1 text-xs bg-black text-white rounded opacity-0 group-hover:opacity-100 pointer-events-none">
               Copy link
             </span>
@@ -41,7 +43,7 @@ const FoodSection = ({ categoryName, items }) => {
 
       <ScrollArea className="flex-1 pb-4">
         <div className="flex gap-2 sm:gap-4">
-          {items.map((item, idx) => (
+          {sortedItems.map((item, idx) => (
             <FoodCard
               key={idx}
               food={item}
@@ -56,5 +58,6 @@ const FoodSection = ({ categoryName, items }) => {
     </section>
   );
 };
+
 
 export default FoodSection;
