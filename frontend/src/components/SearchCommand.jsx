@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import Fuse from "fuse.js";
 import {
   Command,
@@ -125,6 +125,13 @@ const SearchCommand = ({ open, setOpen }) => {
     setSearch(""); // Clear search after selection
   };
 
+  useEffect(() => {
+    if (open) {
+      // slight delay to ensure the input is rendered
+      setTimeout(() => inputRef.current?.focus(), 0);
+    }
+  }, [open]);
+
   return (
     <>
       <CommandDialog
@@ -140,13 +147,13 @@ const SearchCommand = ({ open, setOpen }) => {
           className="rounded-lg border shadow-md md:min-w-[450px]"
           shouldFilter={false}
         >
-          <div className="border-b flex w-full gap-2 items-center">
+          <div className="border-b flex w-full gap-0 items-center">
             <Button
               variant="ghost"
               className="flex-shrink-0 rounded-none h-full"
               onClick={() => setOpen(false)}
             >
-              <ArrowLeft />
+              <ArrowLeft className="!size-5 sm:!size-4" />
             </Button>
             <CommandInput
               ref={inputRef} // ✅ attach ref

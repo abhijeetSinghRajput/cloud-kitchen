@@ -36,7 +36,7 @@ const FoodCategory = () => {
             return (
               <div
                 key={index}
-                className={cn("relative", isEmpty && "grayscale-[0.6]")}
+                className={cn("relative", isEmpty && "grayscale-[0.75]")}
               >
                 {cartQuantity > 0 && (
                   <Badge className="absolute top-0 right-0 z-10 shadow-md rounded-full bg-[#ff5200] hover:bg-[#ff5200]">
