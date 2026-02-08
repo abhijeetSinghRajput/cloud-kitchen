@@ -16,10 +16,11 @@ const FoodCard = ({ food, categoryName, className, imageClassName }) => {
 
   return (
     <Card className={cn("flex gap-2 overflow-hidden food-card shadow-none border-none", className)}>
-      <div className={cn("h-[50svh]", imageClassName)}>
+      <div className={cn("h-[50svh] rounded-md overflow-hidden", imageClassName)}>
         <ImageWithSkeleton
           src={food.image}
           alt={food.name}
+          disabled={!food.isAvailable}
           className="w-full h-full object-cover rounded-md"
         />
       </div>
@@ -36,7 +37,7 @@ const FoodCard = ({ food, categoryName, className, imageClassName }) => {
             <span>{food.price}</span>
           </div>
 
-          <div className="bg-[#ff5200] rounded-full overflow-hidden w-max">
+          <div className={cn("bg-[#ff5200] rounded-full overflow-hidden w-max", !food.isAvailable && "brightness-75")}>
             <div className="relative h-10 flex items-center justify-center gap-2">
               <span className="absolute text-primary-foreground font-medium z-10">
                 {itemQuantity || "Add"}
@@ -44,7 +45,7 @@ const FoodCard = ({ food, categoryName, className, imageClassName }) => {
               <Button
                 className="h-full rounded-none bg-[#ff5200] hover:bg-transparent shadow-none"
                 onClick={() => removeFromCart(categoryName, food)}
-                disabled={itemQuantity === 0}
+                disabled={!food.isAvailable || itemQuantity === 0}
                 aria-label={`Decrease quantity of ${food.name}`}
               >
                 <Minus />
@@ -53,6 +54,7 @@ const FoodCard = ({ food, categoryName, className, imageClassName }) => {
                 className="h-full rounded-none bg-[#ff5200] hover:bg-transparent shadow-none"
                 onClick={() => addToCart(categoryName, food)}
                 aria-label={`Increase quantity of ${food.name}`}
+                disabled={!food.isAvailable}
               >
                 <Plus />
               </Button>

@@ -43,7 +43,7 @@ export const useInventoryStore = create((set, get) => ({
 
   clearError: () => set({ error: "" }),
 
-  // ✅ Fetch categories with error handling
+  // ✅ Fetch ALL categories (not just available ones)
   fetchCategories: async () => {
     const { setLoading, setError } = get();
     setLoading("fetchCategories");
@@ -67,7 +67,7 @@ export const useInventoryStore = create((set, get) => ({
     }
   },
 
-  // ✅ Fetch category by slug WITH items (improved error handling)
+  // ✅ Fetch category by slug WITH items
   getCategoryWithItems: async (slug) => {
     const { setLoading, setError } = get();
     setLoading("fetchItems");
@@ -76,10 +76,9 @@ export const useInventoryStore = create((set, get) => ({
     try {
       if (!slug) throw new Error("Category slug is required");
 
-      // 1. Get category by slug
       const categoryQuery = query(
         collection(db, "categories"),
-        where("slug", "==", slug)
+        where("slug", "==", slug),
       );
       const categorySnapshot = await getDocs(categoryQuery);
 
@@ -89,10 +88,10 @@ export const useInventoryStore = create((set, get) => ({
 
       const categoryDoc = categorySnapshot.docs[0];
       const categoryData = { id: categoryDoc.id, ...categoryDoc.data() };
-      // 2. Get items for that category
+
       const itemsQuery = query(
         collection(db, "items"),
-        where("categoryId", "==", categoryDoc.id)
+        where("categoryId", "==", categoryDoc.id),
       );
       const itemsSnapshot = await getDocs(itemsQuery);
 
@@ -101,12 +100,10 @@ export const useInventoryStore = create((set, get) => ({
         ...docSnap.data(),
       }));
 
-      // 3. Update Zustand state
       set((state) => ({
         items: { ...state.items, [categoryDoc.id]: items },
       }));
 
-      // 4. Return merged object
       return {
         ...categoryData,
         items,
@@ -120,60 +117,61 @@ export const useInventoryStore = create((set, get) => ({
     }
   },
 
-  // ✅ Fetch all categories with their items (JOIN style)
+  // ✅ Optimized: Fetch ALL categories with items in single pass
   fetchCategoriesWithItems: async () => {
     const { setLoading, setError } = get();
     setLoading("fetchCategoriesWithItems");
     set({ error: "" });
 
     try {
-      // 1. Fetch categories
-      const categoriesSnap = await getDocs(collection(db, "categories"));
+      // Fetch both in parallel
+      const [categoriesSnap, itemsSnap] = await Promise.all([
+        getDocs(collection(db, "categories")),
+        getDocs(collection(db, "items")),
+      ]);
+
+      // Process categories
       const categories = categoriesSnap.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
-      // 2. For each category, fetch items
-      const categoriesWithItems = await Promise.all(
-        categories.map(async (cat) => {
-          const q = query(
-            collection(db, "items"),
-            where("categoryId", "==", cat.id)
-          );
-          const itemsSnap = await getDocs(q);
-          const items = itemsSnap.docs.map((itemDoc) => ({
-            id: itemDoc.id,
-            ...itemDoc.data(),
-          }));
+      // Group items by categoryId
+      const itemsByCategory = {};
+      itemsSnap.docs.forEach((doc) => {
+        const item = { id: doc.id, ...doc.data() };
+        if (!itemsByCategory[item.categoryId]) {
+          itemsByCategory[item.categoryId] = [];
+        }
+        itemsByCategory[item.categoryId].push(item);
+      });
 
-          return { ...cat, items };
-        })
-      );
+      // Attach items to categories
+      const categoriesWithItems = categories.map((cat) => ({
+        ...cat,
+        items: itemsByCategory[cat.id] || [],
+      }));
 
-      const categoryCount = categoriesWithItems.filter(c => c.isAvailable);
-      localStorage.setItem("categoryCount", categoryCount.length || 0);
-      
-      // 3. Update Zustand state
+      const availableCategories = categories.filter((c) => c.isAvailable);
+
+      localStorage.setItem("categoryCount", availableCategories.length || 0);
+
       set({
         categories: categoriesWithItems,
-        items: categoriesWithItems.reduce((acc, cat) => {
-          acc[cat.id] = cat.items;
-          return acc;
-        }, {}),
+        items: itemsByCategory,
       });
 
       return categoriesWithItems;
     } catch (err) {
       console.error("Error fetching categories with items:", err);
-      setError(err, "fetchCategories");
+      setError(err, "fetchCategoriesWithItems");
       throw err;
     } finally {
       setLoading("fetchCategoriesWithItems", false);
     }
   },
 
-  // ✅ Fetch ALL items (grouped by category)
+  // ✅ Optimized: Fetch ALL items (grouped by category)
   getAllItems: async () => {
     const { setLoading, setError } = get();
     setLoading("fetchItems");
@@ -211,7 +209,7 @@ export const useInventoryStore = create((set, get) => ({
 
       const q = query(
         collection(db, "items"),
-        where("categoryId", "==", categoryId)
+        where("categoryId", "==", categoryId),
       );
       const snapshot = await getDocs(q);
 
@@ -234,7 +232,7 @@ export const useInventoryStore = create((set, get) => ({
     }
   },
 
-  // ✅ Update category availability (with batch operations)
+  // ✅ Optimized: Batch update category availability
   updateCategoriesAvailability: async (categoryIds = [], isAvailable) => {
     const { setLoading, setError } = get();
     setLoading("updateCategoriesAvailability");
@@ -245,7 +243,6 @@ export const useInventoryStore = create((set, get) => ({
         throw new Error("Category IDs array is required");
       }
 
-      // Use batch for better performance and atomicity
       const batch = writeBatch(db);
 
       categoryIds.forEach((id) => {
@@ -258,10 +255,10 @@ export const useInventoryStore = create((set, get) => ({
 
       await batch.commit();
 
-      // Update local state
+      // Optimized: Update state immutably
       set((state) => ({
         categories: state.categories.map((c) =>
-          categoryIds.includes(c.id) ? { ...c, isAvailable } : c
+          categoryIds.includes(c.id) ? { ...c, isAvailable } : c,
         ),
       }));
 
@@ -275,7 +272,7 @@ export const useInventoryStore = create((set, get) => ({
     }
   },
 
-  // ✅ Add new item (improved validation)
+  // ✅ Add new item
   addItem: async (categoryId, item) => {
     const { setLoading, setError } = get();
     setLoading("addItem");
@@ -291,7 +288,7 @@ export const useInventoryStore = create((set, get) => ({
       const itemData = {
         ...item,
         categoryId,
-        price: Number(item.price), // Ensure numeric
+        price: Number(item.price),
         tags: Array.isArray(item.tags) ? item.tags : [],
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -301,7 +298,6 @@ export const useInventoryStore = create((set, get) => ({
 
       const newItem = { ...itemData, id: docRef.id };
 
-      // Update local state
       set((state) => ({
         items: {
           ...state.items,
@@ -337,22 +333,18 @@ export const useInventoryStore = create((set, get) => ({
         updatedAt: serverTimestamp(),
       };
 
-      // Remove undefined values
       Object.keys(updateData).forEach((key) => {
-        if (updateData[key] === undefined) {
-          delete updateData[key];
-        }
+        if (updateData[key] === undefined) delete updateData[key];
       });
 
       await updateDoc(doc(db, "items", itemId), updateData);
 
-      // Update local state
       set((state) => ({
         items: {
           ...state.items,
           [categoryId]:
             state.items[categoryId]?.map((i) =>
-              i.id === itemId ? { ...i, ...updateData } : i
+              i.id === itemId ? { ...i, ...updateData } : i,
             ) || [],
         },
       }));
@@ -377,23 +369,19 @@ export const useInventoryStore = create((set, get) => ({
       if (!item || !item.id) throw new Error("Item with ID is required");
       if (!item.categoryId) throw new Error("Item must have categoryId");
 
-      // 1. Delete image first if provided and item has image
       if (deleteImage && item.image) {
         try {
           await deleteImage(item.image);
         } catch (imageError) {
           console.warn(
             "Failed to delete image, continuing with item deletion:",
-            imageError
+            imageError,
           );
-          // Continue with item deletion even if image deletion fails
         }
       }
 
-      // 2. Delete from Firestore
       await deleteDoc(doc(db, "items", item.id));
 
-      // 3. Update local state
       set((state) => ({
         items: {
           ...state.items,
@@ -412,7 +400,7 @@ export const useInventoryStore = create((set, get) => ({
     }
   },
 
-  // ✅ Bulk operations
+  // ✅ Optimized: Bulk operations
   bulkUpdateItems: async (categoryId, updates) => {
     const { setLoading, setError } = get();
     setLoading("updateItem");
@@ -422,8 +410,7 @@ export const useInventoryStore = create((set, get) => ({
       const batch = writeBatch(db);
 
       updates.forEach(({ id, data }) => {
-        const docRef = doc(db, "items", id);
-        batch.update(docRef, {
+        batch.update(doc(db, "items", id), {
           ...data,
           updatedAt: serverTimestamp(),
         });
@@ -431,7 +418,6 @@ export const useInventoryStore = create((set, get) => ({
 
       await batch.commit();
 
-      // Update local state
       const updateMap = new Map(updates.map(({ id, data }) => [id, data]));
 
       set((state) => ({
@@ -441,7 +427,7 @@ export const useInventoryStore = create((set, get) => ({
             state.items[categoryId]?.map((item) =>
               updateMap.has(item.id)
                 ? { ...item, ...updateMap.get(item.id) }
-                : item
+                : item,
             ) || [],
         },
       }));

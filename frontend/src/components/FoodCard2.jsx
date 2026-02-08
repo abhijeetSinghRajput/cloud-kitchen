@@ -16,6 +16,7 @@ const FoodCard2 = ({item, onClick}) => {
             <ImageWithSkeleton
               src={item.image}
               alt={item.name}
+              disabled={!item.isAvailable}
               className="w-full h-full object-cover"
               loading="lazy"
               onError={(e) => {

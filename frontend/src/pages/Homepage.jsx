@@ -1,6 +1,5 @@
 import CartFooter from "@/components/CartFooter";
 import FoodCategory from "@/components/food category/FoodCategory";
-import FoodListDrawer from "@/components/FoodListDrawer";
 import FoodSection from "@/components/FoodSection";
 import GoogleReviews from "@/components/GoogleReviews";
 import Navbar from "@/components/Navbar";
@@ -8,16 +7,12 @@ import HomepageSkeleton, {
   FoodSectionSkeleton,
 } from "@/components/skeleton/HomepageSkeleton";
 import { Separator } from "@/components/ui/separator";
-import { useCartStore } from "@/stores/useCartStore";
 import { useInventoryStore } from "@/stores/useInventoryStore";
 import React, { useEffect } from "react";
 
 const Homepage = () => {
   const { categories, items, getAllItems, fetchCategoriesWithItems, loading } =
     useInventoryStore();
-  const availableCategories = categories.filter(
-    (category) => category.isAvailable
-  );
 
   useEffect(() => {
     fetchCategoriesWithItems();
@@ -41,7 +36,7 @@ const Homepage = () => {
           </div>
         ) : (
           <div className="space-y-12 mt-8">
-            {availableCategories.map((category) => (
+            {categories.map((category) => (
               <FoodSection
                 key={category?.id} // ✅ add key for list rendering
                 categoryName={category?.name}

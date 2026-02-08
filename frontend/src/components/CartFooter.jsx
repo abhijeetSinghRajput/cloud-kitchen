@@ -13,7 +13,7 @@ const CartFooter = () => {
   if (isEmpty) return null;
   return (
     <footer className="sticky z-10 border-t bottom-0 bg-muted shadow-md left-0">
-      <div className="flex items-center justify-between gap-4 max-w-screen-xl p-4 mx-auto">
+      <div className="flex items-center justify-between gap-4 pr-0 max-w-screen-xl p-4 mx-auto">
         <div className="space-y-0.5">
           {!isEmpty && (
             <p className="text-xs sm:text-sm text-muted-foreground font-semibold">

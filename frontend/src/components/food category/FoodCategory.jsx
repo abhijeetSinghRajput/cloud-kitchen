@@ -7,6 +7,8 @@ import { useCartStore } from "@/stores/useCartStore";
 import { useInventoryStore } from "@/stores/useInventoryStore";
 import FoodCategorySkeleton from "./FoodCategorySkeleton";
 import ImageWithSkeleton from "../ImageWithSkeleton";
+import { Ban } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const FoodCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -19,9 +21,8 @@ const FoodCategory = () => {
     setDrawerOpen(true);
   };
 
-  const availableCategories = categories.filter(
-    (category) => category.isAvailable
-  );
+  const availableCategories = categories.filter((c) => c.isAvailable);
+
 
   return (
     <div>
@@ -31,12 +32,20 @@ const FoodCategory = () => {
           <FoodCategorySkeleton />
         ) : (
           availableCategories.map((cat, index) => {
-            const quantity = getCategoryItemQuantity(cat.name);
+            const cartQuantity = getCategoryItemQuantity(cat.name);
+            const isEmpty = cat.items.length === 0;
             return (
-              <div key={index} className="relative">
-                {quantity > 0 && (
+              <div key={index} className={cn("relative", isEmpty && "opacity-70")}>
+                {cartQuantity > 0 && (
                   <Badge className="absolute top-0 right-0 z-10 shadow-md rounded-full bg-[#ff5200] hover:bg-[#ff5200]">
-                    {quantity}
+                    {cartQuantity}
+                  </Badge>
+                )}
+
+                {isEmpty && (
+                  <Badge className="rounded-full absolute top-0 left-0 gap-1 z-10">
+                    <Ban size={12} />
+                    empty
                   </Badge>
                 )}
 

@@ -14,6 +14,8 @@ import { useInventoryStore } from "@/stores/useInventoryStore";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import FoodCard from "./FoodCard";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { CupSoda } from "lucide-react";
 
 const SearchCommand = ({ open, setOpen }) => {
   const { categories } = useInventoryStore();
@@ -29,7 +31,7 @@ const SearchCommand = ({ open, setOpen }) => {
         ...item,
         categoryId: category.id,
         categoryName: category.name,
-      }))
+      })),
     );
   }, [categories]);
 
@@ -37,14 +39,14 @@ const SearchCommand = ({ open, setOpen }) => {
   const fuse = useMemo(() => {
     return new Fuse(allItems, {
       keys: [
-        { name: "name", weight: 3 },           // Highest priority
-        { name: "tags", weight: 2 },           // Medium priority
-        { name: "description", weight: 1 },    // Lowest priority
+        { name: "name", weight: 3 }, // Highest priority
+        { name: "tags", weight: 2 }, // Medium priority
+        { name: "description", weight: 1 }, // Lowest priority
       ],
-      threshold: 0.4,        // 0 = perfect match, 1 = match anything
-      distance: 100,         // Max distance for fuzzy match
+      threshold: 0.4, // 0 = perfect match, 1 = match anything
+      distance: 100, // Max distance for fuzzy match
       minMatchCharLength: 2, // Minimum characters to start searching
-      includeScore: true,    // Include match score
+      includeScore: true, // Include match score
       useExtendedSearch: true, // Enable exact match bonus
     });
   }, [allItems]);
@@ -65,7 +67,7 @@ const SearchCommand = ({ open, setOpen }) => {
     }
 
     const term = search.trim().toLowerCase();
-    
+
     // Perform fuzzy search
     const fuseResults = fuse.search(term);
 
@@ -78,8 +80,9 @@ const SearchCommand = ({ open, setOpen }) => {
       if (item.name.toLowerCase() === term) scoreBoost += 10;
       else if (item.name.toLowerCase().includes(term)) scoreBoost += 5;
 
-      if (item.tags?.some(tag => tag.toLowerCase() === term)) scoreBoost += 3;
-      else if (item.tags?.some(tag => tag.toLowerCase().includes(term))) scoreBoost += 1.5;
+      if (item.tags?.some((tag) => tag.toLowerCase() === term)) scoreBoost += 3;
+      else if (item.tags?.some((tag) => tag.toLowerCase().includes(term)))
+        scoreBoost += 1.5;
 
       if (item.description?.toLowerCase().includes(term)) scoreBoost += 0.5;
 
@@ -128,11 +131,15 @@ const SearchCommand = ({ open, setOpen }) => {
           setOpen(isOpen);
           if (!isOpen) setSearch(""); // Clear on close
         }}
-        className="top-0 translate-y-0"
+        closeButtonClassName="hidden"
+        className="top-0 translate-y-0 rounded-b-xl"
       >
-        <Command className="rounded-lg border shadow-md md:min-w-[450px]" shouldFilter={false}>
+        <Command
+          className="rounded-lg border shadow-md md:min-w-[450px]"
+          shouldFilter={false}
+        >
           <CommandInput
-            placeholder="Search by name, tags, or description..."
+            placeholder="Search food items"
             value={search}
             onValueChange={setSearch}
           />
@@ -150,13 +157,16 @@ const SearchCommand = ({ open, setOpen }) => {
                         className="cursor-pointer flex gap-2 items-center"
                         onSelect={() => handleSelect(item, item.categoryName)}
                       >
-                        <div className="size-12 rounded-full overflow-hidden flex-shrink-0">
-                          <img
+                        <Avatar className="size-14 flex-shrink-0">
+                          <AvatarImage
                             src={item.image}
                             className="h-full w-full object-cover"
                             alt={item.name}
                           />
-                        </div>
+                          <AvatarFallback className="text-muted-foreground bg-primary/10">
+                            <CupSoda />
+                          </AvatarFallback>
+                        </Avatar>
                         <div className="flex-1 min-w-0">
                           <h4 className="font-medium">{item.name}</h4>
                           <p className="text-muted-foreground line-clamp-1 text-sm">

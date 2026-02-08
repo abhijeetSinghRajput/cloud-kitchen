@@ -22,10 +22,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import React, { useState, useEffect, useCallback } from "react";
 import ImageUpload from "../ImageUpload";
-import { Trash2, Loader2, AlertCircle } from "lucide-react";
+import { Trash2, Loader2, AlertCircle, Ban } from "lucide-react";
 import { useCloudinaryStore } from "@/stores/useCloudinaryStore";
 import { useInventoryStore } from "@/stores/useInventoryStore";
 import { cn } from "@/lib/utils";
+import { Switch } from "../ui/switch";
 
 const FoodItemDialog = ({
   item = null,
@@ -42,6 +43,7 @@ const FoodItemDialog = ({
     description: "",
     price: "",
     tags: "",
+    isAvailable: true,
   });
 
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
@@ -75,6 +77,7 @@ const FoodItemDialog = ({
         description: item.description || "",
         price: item.price?.toString() || "",
         tags: Array.isArray(item.tags) ? item.tags.join(", ") : "",
+        isAvailable: Boolean(item.isAvailable),
       });
     } else {
       setFormData({
@@ -84,6 +87,7 @@ const FoodItemDialog = ({
         description: "",
         price: "",
         tags: "",
+        isAvailable: true,
       });
     }
     setValidationErrors({});
@@ -174,7 +178,7 @@ const FoodItemDialog = ({
   };
 
   // ✅ Handle form input changes
-  const handleChange = (e) => {
+  const handleFormFieldChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
@@ -204,6 +208,7 @@ const FoodItemDialog = ({
           .map((t) => t.trim())
           .filter((t) => t.length > 0),
         image: formData.image,
+        isAvailable: formData.isAvailable,
       };
 
       let result;
@@ -284,13 +289,20 @@ const FoodItemDialog = ({
             {/* Image Upload */}
             <div>
               <Label>Item Image</Label>
-              <ImageUpload
-                image={formData.image}
-                onChange={handleImageChange}
-                isLoading={cloudLoading.uploadImage}
-                error={cloudError}
-                className="mt-2"
-              />
+              <div className="relative w-max rounded-lg overflow-hidden">
+                <ImageUpload
+                  image={formData.image}
+                  onChange={handleImageChange}
+                  isLoading={cloudLoading.uploadImage}
+                  error={cloudError}
+                  className="mt-2"
+                />
+                {!formData.isAvailable && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <Ban className="text-white size-8"/>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Name */}
@@ -300,7 +312,7 @@ const FoodItemDialog = ({
                 id="name"
                 name="name"
                 value={formData.name}
-                onChange={handleChange}
+                onChange={handleFormFieldChange}
                 placeholder="Enter food name"
                 className={cn(
                   "h-11",
@@ -321,7 +333,7 @@ const FoodItemDialog = ({
                 id="description"
                 name="description"
                 value={formData.description}
-                onChange={handleChange}
+                onChange={handleFormFieldChange}
                 placeholder="Write a short description..."
                 className={cn(
                   "h-11",
@@ -345,7 +357,7 @@ const FoodItemDialog = ({
                 min="0"
                 step="0.01"
                 value={formData.price}
-                onChange={handleChange}
+                onChange={handleFormFieldChange}
                 placeholder="100"
                 className={cn(
                   "h-11",
@@ -366,13 +378,24 @@ const FoodItemDialog = ({
                 id="tags"
                 name="tags"
                 value={formData.tags}
-                onChange={handleChange}
+                onChange={handleFormFieldChange}
                 placeholder="spicy, veg, popular"
                 className="h-11"
               />
               <p className="text-sm text-muted-foreground mt-1">
                 Separate multiple tags with commas
               </p>
+            </div>
+
+            <div className="flex gap-4 items-center">
+              <Label htmlFor="isAvailable">Availability</Label>
+              <Switch
+                id="isAvailable"
+                checked={formData.isAvailable}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({ ...prev, isAvailable: checked }))
+                }
+              />
             </div>
 
             {/* Action Buttons */}

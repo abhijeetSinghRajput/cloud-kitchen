@@ -61,7 +61,7 @@ const FoodItemPage = () => {
       // Refresh the category data to show latest items
       await fetchData();
     },
-    [fetchData]
+    [fetchData],
   );
 
   // ✅ Manual refresh
@@ -133,12 +133,11 @@ const FoodItemPage = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <TooltipWrapper message="back to category">
-            <Link
-              to="/admin/category"
-              className="inline-flex hover:bg-accent p-1 rounded-md items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ChevronLeft className="size-5" />
-            </Link>
+            <Button asChild size="icon" variant="ghost">
+              <Link to="/admin/category">
+                <ChevronLeft className="!size-6" />
+              </Link>
+            </Button>
           </TooltipWrapper>
 
           <div className="flex gap-2 items-center">

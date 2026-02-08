@@ -87,7 +87,7 @@ const SelectCategoryDrawer = ({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="h-[70vh]">
-        <div className="p-4 max-w-screen-md w-full mx-auto h-full flex flex-col">
+        <div className="p-4 pr-0 max-w-screen-md w-full mx-auto h-full flex flex-col">
           <div className="flex justify-between items-center">
             <h3 className="text-xl font-bold mb-4">Select Category</h3>
             <Button

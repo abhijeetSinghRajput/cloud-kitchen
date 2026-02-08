@@ -21,9 +21,7 @@ const FoodCategoryPage = () => {
     fetchCategoriesWithItems();
   }, []);
 
-  const availableCategories = categories.filter(
-    (category) => category.isAvailable
-  );
+  const availableCategories = categories.filter((c) => c.isAvailable);
 
   return (
     <div>
@@ -36,7 +34,7 @@ const FoodCategoryPage = () => {
               className="border-2 aspect-square rounded-lg border-dashed flex items-center justify-center cursor-pointer hover:bg-muted h-auto"
               onClick={() => setOpenDrawer(true)}
             >
-              <Plus className="size-1/3 text-muted-foreground" />
+              <Plus className="!size-1/3 text-muted-foreground" />
             </Button>
           </TooltipWrapper>
 
