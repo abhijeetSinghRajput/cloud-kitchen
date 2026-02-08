@@ -14,9 +14,22 @@ const Homepage = () => {
   const { categories, items, getAllItems, fetchCategoriesWithItems, loading } =
     useInventoryStore();
 
+  // Fetch data
   useEffect(() => {
     fetchCategoriesWithItems();
     getAllItems();
+  }, []);
+
+  // Scroll to hash on page load / refresh
+  useEffect(() => {
+    const hash = window.location.hash.slice(1); // remove #
+    if (!hash) return;
+
+    const el = document.getElementById(hash);
+    if (el) {
+      // Smooth scroll respecting scroll-margin-top
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }, []);
 
   return (
@@ -28,6 +41,7 @@ const Homepage = () => {
 
         <GoogleReviews />
         <Separator className="my-8" />
+
         {loading.fetchCategoriesWithItems ? (
           <div className="space-y-12 mt-8">
             {[...Array(10)].map((_, idx) => (
@@ -38,7 +52,7 @@ const Homepage = () => {
           <div className="space-y-12 mt-8">
             {categories.map((category) => (
               <FoodSection
-                key={category?.id} // ✅ add key for list rendering
+                key={category?.id}
                 categoryName={category?.name}
                 items={items[category?.id] || []}
               />
