@@ -3,9 +3,7 @@ import FoodCategory from "@/components/food category/FoodCategory";
 import FoodSection from "@/components/FoodSection";
 import GoogleReviews from "@/components/GoogleReviews";
 import Navbar from "@/components/Navbar";
-import HomepageSkeleton, {
-  FoodSectionSkeleton,
-} from "@/components/skeleton/HomepageSkeleton";
+import { FoodSectionSkeleton } from "@/components/skeleton/HomepageSkeleton";
 import { Separator } from "@/components/ui/separator";
 import { useInventoryStore } from "@/stores/useInventoryStore";
 import React, { useEffect } from "react";
@@ -22,15 +20,22 @@ const Homepage = () => {
 
   // Scroll to hash on page load / refresh
   useEffect(() => {
-    const hash = window.location.hash.slice(1); // remove #
+    const hash = window.location.hash.slice(1);
     if (!hash) return;
 
-    const el = document.getElementById(hash);
-    if (el) {
-      // Smooth scroll respecting scroll-margin-top
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, []);
+    // Wait for DOM to render categories
+    const scrollToHash = () => {
+      const el = document.getElementById(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        // Retry after a short delay until element exists
+        setTimeout(scrollToHash, 50);
+      }
+    };
+
+    scrollToHash();
+  }, [categories]); // Run again when categories load
 
   return (
     <>
