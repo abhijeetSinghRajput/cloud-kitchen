@@ -23,19 +23,27 @@ const Homepage = () => {
     const hash = window.location.hash.slice(1);
     if (!hash) return;
 
-    // Wait for DOM to render categories
     const scrollToHash = () => {
       const el = document.getElementById(hash);
       if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        const headerOffset = 60; // your sticky header height
+        const elementPosition = el.getBoundingClientRect().top;
+        const offsetPosition =
+          elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
       } else {
-        // Retry after a short delay until element exists
+        // retry after 50ms if element not rendered yet
         setTimeout(scrollToHash, 50);
       }
     };
 
     scrollToHash();
-  }, [categories]); // Run again when categories load
+  }, [categories]);
+  // Run again when categories load
 
   return (
     <>
