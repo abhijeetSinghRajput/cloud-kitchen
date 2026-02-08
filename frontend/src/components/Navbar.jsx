@@ -20,7 +20,7 @@ const Navbar = ({ authUser = null }) => {
     <nav className="sticky z-50 top-0 bg-primary-foreground shadow-md left-0">
       <div className="max-w-screen-xl mx-auto flex justify-between items-center px-4 py-2">
         <h1 className="text-[#ff5200] font-semibold">
-          <Link to={"/"} className="flex gap-1 items-center">
+          <a href="#" className="flex gap-1 items-center">
             <img
               src="/logo-mini.svg"
               alt="cloud kitchen logo"
@@ -31,7 +31,7 @@ const Navbar = ({ authUser = null }) => {
               alt="cloud kitchen logo"
               className="h-[18px] logo"
             />
-          </Link>
+          </a>
         </h1>
         <div className="flex items-center gap-3">
           {/* <Link to="/subscription">

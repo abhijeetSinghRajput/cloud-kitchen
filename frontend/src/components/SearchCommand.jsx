@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import Fuse from "fuse.js";
 import {
   Command,
@@ -15,9 +15,11 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import FoodCard from "./FoodCard";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { CupSoda } from "lucide-react";
+import { ArrowLeft, CupSoda, X } from "lucide-react";
+import { Button } from "./ui/button";
 
 const SearchCommand = ({ open, setOpen }) => {
+  const inputRef = useRef(null);
   const { categories } = useInventoryStore();
   const [search, setSearch] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
@@ -138,11 +140,33 @@ const SearchCommand = ({ open, setOpen }) => {
           className="rounded-lg border shadow-md md:min-w-[450px]"
           shouldFilter={false}
         >
-          <CommandInput
-            placeholder="Search food items"
-            value={search}
-            onValueChange={setSearch}
-          />
+          <div className="flex w-full border gap-2 items-center">
+            <Button
+              variant="ghost"
+              className="flex-shrink-0 rounded-none h-full"
+              onClick={() => setOpen(false)}
+            >
+              <ArrowLeft />
+            </Button>
+            <CommandInput
+              ref={inputRef} // ✅ attach ref
+              placeholder="Search food items"
+              value={search}
+              onValueChange={setSearch}
+              className="flex-1"
+            />
+            <Button
+              variant="ghost"
+              className="flex-shrink-0 rounded-none h-full"
+              onClick={() => {
+                setSearch(""); // clear input
+                inputRef.current?.focus(); // ✅ keep focus
+              }}
+            >
+              <X />
+            </Button>
+          </div>
+
           <CommandList>
             {searchResults.length === 0 ? (
               <CommandEmpty>No results found.</CommandEmpty>
