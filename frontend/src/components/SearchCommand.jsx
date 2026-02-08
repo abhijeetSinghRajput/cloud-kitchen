@@ -140,7 +140,7 @@ const SearchCommand = ({ open, setOpen }) => {
           className="rounded-lg border shadow-md md:min-w-[450px]"
           shouldFilter={false}
         >
-          <div className="flex w-full border gap-2 items-center">
+          <div className="border-b flex w-full gap-2 items-center">
             <Button
               variant="ghost"
               className="flex-shrink-0 rounded-none h-full"

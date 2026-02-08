@@ -38,14 +38,16 @@ const CommandDialog = ({
 };
 
 const CommandInput = React.forwardRef(({ className, ...props }, ref) => (
-  <CommandPrimitive.Input
-    ref={ref}
-    className={cn(
-      "flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
-      className,
-    )}
-    {...props}
-  />
+  <div className="flex-1 flex items-center px-3" cmdk-input-wrapper="">
+    <CommandPrimitive.Input
+      ref={ref}
+      className={cn(
+        "flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+        className,
+      )}
+      {...props}
+    />
+  </div>
 ));
 
 CommandInput.displayName = CommandPrimitive.Input.displayName;

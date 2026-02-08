@@ -34,29 +34,16 @@ const Navbar = ({ authUser = null }) => {
           </a>
         </h1>
         <div className="flex items-center gap-3">
-          {/* <Link to="/subscription">
-            <Button className="rounded-full bg-orange-500 hover:bg-orange-400">
-              Get Subscription
-            </Button>
-          </Link> */}
-
-          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" aria-label="Whatapp contact link">
-              <div className="size-9 aspect-square">
-                <img
-                  src="/whatsapp-logo.svg"
-                  className="w-full h-full object-contain"
-                  alt="Whatapp logo"
-                />
-              </div>
-          </a>
-
           <Button
-            size="icon"
+            // size="icon"
             tooltip="search"
             onClick={() => setSearchOpen(true)}
             aria-label="Search"
+            variant="outline"
+            className="rounded-full h-10 justify-start text-left sm:w-80"
           >
             <Search />
+            <span className="text-sm text-muted-foreground">Search food items</span>
           </Button>
           <Button
             size="icon"
@@ -79,6 +66,27 @@ const Navbar = ({ authUser = null }) => {
               </Badge>
             )}
           </Button>
+
+          {/* <Link to="/subscription">
+            <Button className="rounded-full bg-orange-500 hover:bg-orange-400">
+              Get Subscription
+            </Button>
+          </Link> */}
+
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Whatapp contact link"
+          >
+            <div className="size-9 aspect-square">
+              <img
+                src="/whatsapp-logo.svg"
+                className="w-full h-full object-contain"
+                alt="Whatapp logo"
+              />
+            </div>
+          </a>
         </div>
       </div>
       <SearchCommand open={searchOpen} setOpen={setSearchOpen} />
