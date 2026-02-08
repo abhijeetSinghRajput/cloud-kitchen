@@ -40,11 +40,12 @@ const Navbar = ({ authUser = null }) => {
             </Button>
           </Link> */}
 
-          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" aria-label="Whatapp contact link">
               <div className="size-9 aspect-square">
                 <img
                   src="/whatsapp-logo.svg"
                   className="w-full h-full object-contain"
+                  alt="Whatapp logo"
                 />
               </div>
           </a>

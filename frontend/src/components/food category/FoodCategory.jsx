@@ -23,7 +23,6 @@ const FoodCategory = () => {
 
   const availableCategories = categories.filter((c) => c.isAvailable);
 
-
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">Categories</h2>
@@ -35,7 +34,10 @@ const FoodCategory = () => {
             const cartQuantity = getCategoryItemQuantity(cat.name);
             const isEmpty = cat.items.length === 0;
             return (
-              <div key={index} className={cn("relative", isEmpty && "opacity-70")}>
+              <div
+                key={index}
+                className={cn("relative", isEmpty && "opacity-70")}
+              >
                 {cartQuantity > 0 && (
                   <Badge className="absolute top-0 right-0 z-10 shadow-md rounded-full bg-[#ff5200] hover:bg-[#ff5200]">
                     {cartQuantity}
@@ -56,6 +58,10 @@ const FoodCategory = () => {
                   <ImageWithSkeleton
                     src={cat.image}
                     alt={cat.name}
+                    loading={index < 3 ? "eager" : "lazy"} // top 3 eager, rest lazy
+                    fetchpriority={index < 3 ? "high" : "auto"} // LCP boost for top images
+                    width={300}
+                    height={300}
                     className="w-full h-full object-contain"
                   />
                 </Card>
